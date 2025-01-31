@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Görev - Görev Takip Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navbar başlangıç -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Görev Takip</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/tasks/create">Yeni Görev</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks/my">Görevlerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/friends">
+                            <i class="fas fa-users me-1"></i> Arkadaşlarım
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>
+                            <span sec:authentication="name">Kullanıcı</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <form th:action="@{/auth/logout}" method="POST">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-1"></i> Çıkış Yap
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar bitiş -->
+    
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Yeni Görev Oluştur</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="createTaskForm">
+                            <div class="mb-3">
+                                <label class="form-label">Başlık</label>
+                                <input type="text" class="form-control" name="title" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Açıklama</label>
+                                <textarea class="form-control" name="description" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Öncelik</label>
+                                <select class="form-control" name="priority" required>
+                                    <option th:each="priority : ${priorities}"
+                                            th:value="${priority}"
+                                            th:text="${priority.displayValue}">Öncelik</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Bitiş Tarihi</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control" id="deadlinePreset">
+                                            <option value="">Özel Tarih Seç</option>
+                                            <option value="1">1 Saat</option>
+                                            <option value="3">3 Saat</option>
+                                            <option value="12">12 Saat</option>
+                                            <option value="24">1 Gün</option>
+                                            <option value="72">3 Gün</option>
+                                            <option value="168">1 Hafta</option>
+                                            <option value="720">1 Ay</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="datetime-local" class="form-control" 
+                                               name="deadline" id="deadlineCustom" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Görevliler</label>
+                                <select class="form-control select2" name="assignees" multiple required>
+                                    <option th:each="friend : ${friends}"
+                                            th:value="${friend.id}"
+                                            th:text="${friend.firstName + ' ' + friend.lastName + ' (' + friend.email + ')'}">
+                                        Kullanıcı
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i> Görevi Oluştur
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Select2 inicializasyonu
+            $('.select2').select2({
+                placeholder: "Görevlileri seçin",
+                allowClear: true
+            });
+            
+            // Önceden tanımlı süre seçimi
+            $('#deadlinePreset').change(function() {
+                const hours = $(this).val();
+                if (hours) {
+                    const deadline = new Date();
+                    deadline.setHours(deadline.getHours() + parseInt(hours));
+                    
+                    const year = deadline.getFullYear();
+                    const month = String(deadline.getMonth() + 1).padStart(2, '0');
+                    const day = String(deadline.getDate()).padStart(2, '0');
+                    const hour = String(deadline.getHours()).padStart(2, '0');
+                    const minute = String(deadline.getMinutes()).padStart(2, '0');
+                    
+                    $('#deadlineCustom').val(`${year}-${month}-${day}T${hour}:${minute}`);
+                }
+            });
+            
+            // Form gönderimi
+            $('#createTaskForm').submit(function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    title: $('input[name="title"]').val(),
+                    description: $('textarea[name="description"]').val(),
+                    priority: $('select[name="priority"]').val(),
+                    deadline: $('input[name="deadline"]').val(),
+                    assigneeIds: $('select[name="assignees"]').val()
+                };
+                
+                $.ajax({
+                    url: '/tasks/create',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        alert(response);
+                        if (!response.startsWith('Hata:')) {
+                            window.location.href = '/tasks/my';
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); // Hata ayıklama için
+                        alert('Bir hata oluştu: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
