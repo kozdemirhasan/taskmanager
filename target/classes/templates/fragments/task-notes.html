@@ -1,0 +1,6 @@
+<div th:each="note : ${task.notes}" class="note-item">
+    <!-- Not türüne göre farklı simgeler göster -->
+    <i th:if="${note.type.name() == 'CREATION'}" class="fas fa-flag"></i>  <!-- Oluşturma notu simgesi -->
+    <i th:if="${note.type.name() == 'REGULAR'}" class="fas fa-comment"></i>  <!-- Normal not simgesi -->
+    <span th:text="${note.note}"></span>
+</div> 
