@@ -3,6 +3,7 @@ com\taskmanager\repository\FriendshipRepository.class
 com\taskmanager\repository\UserRepository.class
 com\taskmanager\service\FriendshipService.class
 com\taskmanager\service\UserService.class
+com\taskmanager\entity\TaskNote$NoteType.class
 com\taskmanager\service\CustomUserDetailsService.class
 com\taskmanager\entity\TaskNote.class
 com\taskmanager\enums\FriendshipStatus.class
