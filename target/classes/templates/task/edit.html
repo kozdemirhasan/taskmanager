@@ -11,197 +11,197 @@
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 </head>
 <body>
-    <!-- Navbar başlangıç -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Görev Takip</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tasks/create">Yeni Görev</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tasks/my">Görevlerim</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/friends">
-                            <i class="fas fa-users me-1"></i> Arkadaşlarım
-                        </a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>
-                            <span sec:authentication="name">Kullanıcı</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li>
-                                <form th:action="@{/auth/logout}" method="POST">
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Çıkış Yap
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Navbar bitiş -->
-
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Görev Düzenle</h5>
-            </div>
-            <div class="card-body">
-                <form id="editTaskForm">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Başlık</label>
-                        <input type="text" class="form-control" id="title" name="title" 
-                               th:value="${task.title}" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Açıklama</label>
-                        <textarea class="form-control" id="description" name="description" 
-                                  rows="3" th:text="${task.description}"></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="priority" class="form-label">Öncelik</label>
-                        <select class="form-select" id="priority" name="priority" required>
-                            <option th:each="priority : ${priorities}"
-                                    th:value="${priority.name()}"
-                                    th:text="${priority.displayValue}"
-                                    th:selected="${priority == task.priority}">
-                            </option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="assignees" class="form-label">Görevliler</label>
-                        <select class="form-select" id="assignees" name="assignees" multiple required>
-                            <option th:each="friend : ${friends}"
-                                    th:value="${friend.id}"
-                                    th:text="${friend.firstName + ' ' + friend.lastName}"
-                                    th:selected="${task.assignees.contains(friend)}">
-                            </option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="deadline" class="form-label">Bitiş Tarihi</label>
-                        <div class="d-flex gap-2 align-items-center">
-                            <input type="datetime-local" class="form-control" id="deadline" name="deadline"
-                                   th:value="${#temporals.format(task.deadline, 'yyyy-MM-dd''T''HH:mm')}" required>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="fas fa-clock"></i> Hızlı Seç
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="1">1 Saat</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="3">3 Saat</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="6">6 Saat</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="12">12 Saat</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="24">24 Saat</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="72">3 Gün</a></li>
-                                    <li><a class="dropdown-item quick-deadline" href="#" data-hours="168">1 Hafta</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> Kaydet
-                    </button>
-                    <a href="/tasks/my" class="btn btn-secondary">
-                        <i class="fas fa-times me-1"></i> İptal
+<!-- Navbar başlangıç -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Task Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/tasks/create">New Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tasks/my">My Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/friends">
+                        <i class="fas fa-users me-1"></i> Friends
                     </a>
-                </form>
-            </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>
+                        <span sec:authentication="name">Kullanıcı</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <form th:action="@{/auth/logout}" method="POST">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
+<!-- Navbar bitiş -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#assignees').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Görevli seçin...',
-                allowClear: true,
-                language: {
-                    noResults: function() {
-                        return "Sonuç bulunamadı";
-                    }
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Edit Task</h5>
+        </div>
+        <div class="card-body">
+            <form id="editTaskForm">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           th:value="${task.title}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description"
+                              rows="3" th:text="${task.description}"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select" id="priority" name="priority" required>
+                        <option th:each="priority : ${priorities}"
+                                th:value="${priority.name()}"
+                                th:text="${priority.displayValue}"
+                                th:selected="${priority == task.priority}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="assignees" class="form-label">Officers</label>
+                    <select class="form-select" id="assignees" name="assignees" multiple required>
+                        <option th:each="friend : ${friends}"
+                                th:value="${friend.id}"
+                                th:text="${friend.firstName + ' ' + friend.lastName}"
+                                th:selected="${task.assignees.contains(friend)}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="deadline" class="form-label">Deadline</label>
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="datetime-local" class="form-control" id="deadline" name="deadline"
+                               th:value="${#temporals.format(task.deadline, 'yyyy-MM-dd''T''HH:mm')}" required>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-clock"></i> Quick Select
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="1">1 Hour</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="3">3 Hours</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="6">6 Hours</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="12">12 Hours</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="24">24 Hours</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="72">3 Days</a></li>
+                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="168">1 Week</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Save
+                </button>
+                <a href="/tasks/my" class="btn btn-secondary">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#assignees').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: 'Görevli seçin...',
+            allowClear: true,
+            language: {
+                noResults: function() {
+                    return "Sonuç bulunamadı";
                 }
-            });
-            
-            $('#editTaskForm').submit(function(e) {
-                e.preventDefault();
-                
-                const assigneeIds = $('#assignees').val() || []; // Boş seçim durumunda boş dizi
-                
-                const formData = {
-                    title: $('#title').val(),
-                    description: $('#description').val(),
-                    priority: $('#priority').val(),
-                    assigneeIds: assigneeIds,
-                    deadline: $('#deadline').val()
-                };
-                
-                fetch('/tasks/edit/' + [[${task.id}]], {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(response => response.text())
-                .then(result => {
-                    alert(result);
-                    if (!result.startsWith('Hata:')) {
-                        window.location.href = '/tasks/my';
-                    }
-                })
-                .catch(error => alert('Bir hata oluştu: ' + error));
-            });
-
-            // Hızlı tarih seçimi için
-            $('.quick-deadline').click(function(e) {
-                e.preventDefault();
-                const hours = $(this).data('hours');
-                const deadline = new Date(new Date().getTime() + hours * 60 * 60 * 1000);
-                
-                // Tarihi yyyy-MM-ddThh:mm formatına çevir
-                const year = deadline.getFullYear();
-                const month = String(deadline.getMonth() + 1).padStart(2, '0');
-                const day = String(deadline.getDate()).padStart(2, '0');
-                const hour = String(deadline.getHours()).padStart(2, '0');
-                const minute = String(deadline.getMinutes()).padStart(2, '0');
-                
-                const formattedDate = `${year}-${month}-${day}T${hour}:${minute}`;
-                $('#deadline').val(formattedDate);
-            });
+            }
         });
-    </script>
 
-    <style>
-        .quick-deadline {
-            cursor: pointer;
-        }
-        .quick-deadline:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
+        $('#editTaskForm').submit(function(e) {
+            e.preventDefault();
+
+            const assigneeIds = $('#assignees').val() || []; // Boş seçim durumunda boş dizi
+
+            const formData = {
+                title: $('#title').val(),
+                description: $('#description').val(),
+                priority: $('#priority').val(),
+                assigneeIds: assigneeIds,
+                deadline: $('#deadline').val()
+            };
+
+            fetch('/tasks/edit/' + [[${task.id}]], {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+                if (!result.startsWith('Hata:')) {
+                    window.location.href = '/tasks/my';
+                }
+            })
+            .catch(error => alert('Bir hata oluştu: ' + error));
+        });
+
+        // Hızlı tarih seçimi için
+        $('.quick-deadline').click(function(e) {
+            e.preventDefault();
+            const hours = $(this).data('hours');
+            const deadline = new Date(new Date().getTime() + hours * 60 * 60 * 1000);
+
+            // Tarihi yyyy-MM-ddThh:mm formatına çevir
+            const year = deadline.getFullYear();
+            const month = String(deadline.getMonth() + 1).padStart(2, '0');
+            const day = String(deadline.getDate()).padStart(2, '0');
+            const hour = String(deadline.getHours()).padStart(2, '0');
+            const minute = String(deadline.getMinutes()).padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}T${hour}:${minute}`;
+            $('#deadline').val(formattedDate);
+        });
+    });
+</script>
+
+<style>
+    .quick-deadline {
+        cursor: pointer;
+    }
+    .quick-deadline:hover {
+        background-color: #f8f9fa;
+    }
+</style>
 </body>
-</html> 
+</html>

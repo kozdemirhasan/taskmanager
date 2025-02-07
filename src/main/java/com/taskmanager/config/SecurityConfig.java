@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/css/**", "/js/**", "/webjars/**", "/images/**").permitAll()
+                .requestMatchers("/auth/**", "/css/**", "/js/**", "/webjars/**", "/images/**", "/error").permitAll()
                 .requestMatchers("/tasks/**", "/friends/**").authenticated()
                 .anyRequest().authenticated()
             )
@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .loginPage("/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .loginProcessingUrl("/auth/login")
+                .loginProcessingUrl("/auth/login-process")
                 .defaultSuccessUrl("/", true)
                 .failureUrl("/auth/login?error")
                 .permitAll()

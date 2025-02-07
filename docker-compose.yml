@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-taskmanager
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: taskmanager
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  taskmanager:
+    image: openjdk:17-jdk-alpine
+    container_name: KUEH-TASK-MANAGEMENT
+    volumes:
+      - /fastdisk/docker-work/scf_drive/KUEH/:/tmp/task-management
+    ports:
+      - "33775:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/taskmanager
+      SPRING_DATASOURCE_USERNAME: taskuser
+      SPRING_DATASOURCE_PASSWORD: taskpassword
+    command: java -jar /tmp/task-management/task-management/task-manager-0.0.1-SNAPSHOT.jar
+
+volumes:
+  mysql_data: 

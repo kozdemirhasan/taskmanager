@@ -9,4 +9,9 @@ public class UserRegistrationDto {
     private String email;
     private String phoneNumber;
     private String password;
+    private String confirmPassword;
+
+    public boolean isPasswordsMatching() {
+        return password != null && password.equals(confirmPassword);
+    }
 } 

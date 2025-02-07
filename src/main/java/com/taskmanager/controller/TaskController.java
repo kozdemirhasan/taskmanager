@@ -71,6 +71,12 @@ public class TaskController {
             task.setCreator(user);
             task.setStatus(TaskStatus.PENDING);
             
+            // İlk not olarak oluşturan kişi bilgisini ekle
+            String creationNote = String.format("Task created by %s %s", 
+                user.getFirstName(), user.getLastName());
+            TaskNote note = task.addNote(user, creationNote);
+            note.setType(TaskNote.NoteType.CREATION);  // Not türünü belirt
+            
             // Görevlileri ekle
             if (taskData.get("assigneeIds") != null) {
                 Set<User> assignees = new HashSet<>();
@@ -86,10 +92,10 @@ public class TaskController {
             }
             
             taskService.createTask(task);
-            return "Görev başarıyla oluşturuldu";
+            return "Task successfully created";
         } catch (Exception e) {
             e.printStackTrace();
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -174,14 +180,14 @@ public class TaskController {
             Task task = taskService.getTaskById(id);
             
             if (!task.getAssignees().contains(user) && !task.getCreator().equals(user)) {
-                return "Hata: Bu görevi tamamlama yetkiniz yok";
+                return "Error: You are not authorised to complete this task";
             }
             
             task.complete(user);
             taskService.updateTask(task);
-            return "Görev başarıyla tamamlandı";
+            return "Task successfully completed";
         } catch (Exception e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -194,14 +200,14 @@ public class TaskController {
             Task task = taskService.getTaskById(id);
             
             if (!task.getCreator().equals(user)) {
-                return "Hata: Bu görevi iptal etme yetkiniz yok";
+                return "Error: You are not authorised to cancel this task";
             }
             
             task.setStatus(TaskStatus.CANCELLED);
             taskService.updateTask(task);
-            return "Görev iptal edildi";
+            return "Task cancelled";
         } catch (Exception e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -214,14 +220,14 @@ public class TaskController {
             Task task = taskService.getTaskById(id);
             
             if (!task.getAssignees().contains(user) && !task.getCreator().equals(user)) {
-                return "Hata: Bu göreve açıklama ekleme yetkiniz yok";
+                return "Error: You are not authorised to annotate this task";
             }
             
             task.addNote(user, noteData.get("note"));
             taskService.updateTask(task);
-            return "Açıklama başarıyla eklendi";
+            return "Description successfully added";
         } catch (Exception e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -254,7 +260,7 @@ public class TaskController {
             Task task = taskService.getTaskById(id);
             
             if (!task.getCreator().equals(user)) {
-                return "Hata: Bu görevi düzenleme yetkiniz yok";
+                return "Error: You are not authorised to edit this task";
             }
             
             task.setTitle((String) taskData.get("title"));
@@ -280,9 +286,9 @@ public class TaskController {
             task.setAssignees(assignees);
             
             taskService.updateTask(task);
-            return "Görev başarıyla güncellendi";
+            return "Task successfully updated";
         } catch (Exception e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -296,7 +302,7 @@ public class TaskController {
             
             // Kullanıcının görevi görüntüleme yetkisi var mı kontrol et
             if (!task.getCreator().equals(user) && !task.getAssignees().contains(user)) {
-                throw new RuntimeException("Bu görevi görüntüleme yetkiniz yok");
+                throw new RuntimeException("You are not authorised to display this task");
             }
             
             Map<String, Object> taskMap = new HashMap<>();

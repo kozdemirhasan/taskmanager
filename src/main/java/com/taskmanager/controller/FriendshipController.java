@@ -44,9 +44,9 @@ public class FriendshipController {
             User sender = userService.findByEmail(auth.getName());
             
             friendshipService.sendFriendRequest(sender, email);
-            return "İstek başarıyla gönderildi";
+            return "Request sent successfully";
         } catch (RuntimeException e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -58,9 +58,9 @@ public class FriendshipController {
             User receiver = userService.findByEmail(auth.getName());
             
             friendshipService.acceptFriendRequest(id, receiver);
-            return "İstek kabul edildi";
+            return "Request granted";
         } catch (RuntimeException e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -72,9 +72,23 @@ public class FriendshipController {
             User receiver = userService.findByEmail(auth.getName());
             
             friendshipService.rejectFriendRequest(id, receiver);
-            return "İstek reddedildi";
+            return "Request rejected";
         } catch (RuntimeException e) {
-            return "Hata: " + e.getMessage();
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/remove")
+    @ResponseBody
+    public String removeFriend(@RequestParam String email) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User currentUser = userService.findByEmail(auth.getName());
+            
+            friendshipService.removeFriend(currentUser, email);
+            return "Friend removed successfully";
+        } catch (RuntimeException e) {
+            return "Error: " + e.getMessage();
         }
     }
 } 

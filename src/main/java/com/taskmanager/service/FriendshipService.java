@@ -1,5 +1,6 @@
 package com.taskmanager.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,21 +25,21 @@ public class FriendshipService {
     public void sendFriendRequest(User sender, String receiverEmail) {
         User receiver = userRepository.findByEmail(receiverEmail);
         if (receiver == null) {
-            throw new RuntimeException("Kullanıcı bulunamadı");
+            throw new RuntimeException("User not found");
         }
         
         if (friendshipRepository.existsBySenderAndReceiverAndStatus(
                 sender, receiver, FriendshipStatus.PENDING) ||
             friendshipRepository.existsBySenderAndReceiverAndStatus(
                 receiver, sender, FriendshipStatus.PENDING)) {
-            throw new RuntimeException("Zaten bekleyen bir arkadaşlık isteği var");
+            throw new RuntimeException("I already have a friend request pending");
         }
         
         if (friendshipRepository.existsBySenderAndReceiverAndStatus(
                 sender, receiver, FriendshipStatus.ACCEPTED) ||
             friendshipRepository.existsBySenderAndReceiverAndStatus(
                 receiver, sender, FriendshipStatus.ACCEPTED)) {
-            throw new RuntimeException("Bu kullanıcı zaten arkadaşınız");
+            throw new RuntimeException("This user is already your friend");
         }
 
         Friendship friendship = new Friendship();
@@ -51,10 +52,10 @@ public class FriendshipService {
 
     public void acceptFriendRequest(Long friendshipId, User receiver) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
-            .orElseThrow(() -> new RuntimeException("Arkadaşlık isteği bulunamadı"));
+            .orElseThrow(() -> new RuntimeException("Friendship request not found"));
             
         if (!friendship.getReceiver().equals(receiver)) {
-            throw new RuntimeException("Bu isteği kabul etme yetkiniz yok");
+            throw new RuntimeException("You are not authorised to accept this request");
         }
         
         friendship.setStatus(FriendshipStatus.ACCEPTED);
@@ -63,10 +64,10 @@ public class FriendshipService {
 
     public void rejectFriendRequest(Long friendshipId, User receiver) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
-            .orElseThrow(() -> new RuntimeException("Arkadaşlık isteği bulunamadı"));
+            .orElseThrow(() -> new RuntimeException("Friendship request not found"));
             
         if (!friendship.getReceiver().equals(receiver)) {
-            throw new RuntimeException("Bu isteği reddetme yetkiniz yok");
+            throw new RuntimeException("You are not authorised to refuse this request");
         }
         
         friendship.setStatus(FriendshipStatus.REJECTED);
@@ -86,6 +87,8 @@ public class FriendshipService {
                     return f.getSender();
                 }
             })
+            .sorted(Comparator.comparing(User::getFirstName)
+                    .thenComparing(User::getLastName))
             .collect(Collectors.toList());
     }
 
@@ -94,5 +97,23 @@ public class FriendshipService {
         return requests.stream()
             .filter(f -> f != null && f.getSender() != null)
             .collect(Collectors.toList());
+    }
+
+    public void removeFriend(User currentUser, String friendEmail) {
+        User friend = userRepository.findByEmail(friendEmail);
+        if (friend == null) {
+            throw new RuntimeException("User not found");
+        }
+        
+        List<Friendship> friendships = friendshipRepository
+            .findBySenderAndReceiverAndStatus(currentUser, friend, FriendshipStatus.ACCEPTED);
+        friendships.addAll(friendshipRepository
+            .findBySenderAndReceiverAndStatus(friend, currentUser, FriendshipStatus.ACCEPTED));
+            
+        if (friendships.isEmpty()) {
+            throw new RuntimeException("Friendship not found");
+        }
+        
+        friendshipRepository.deleteAll(friendships);
     }
 } 

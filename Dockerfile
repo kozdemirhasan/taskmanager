@@ -35,13 +35,15 @@
 ## Uygulamayı başlat
 #CMD ["java", "-jar", "app.jar"]
 
+# Base image olarak OpenJDK kullanıyoruz
+FROM openjdk:17-jdk-alpine
 
+# Uygulama JAR dosyasını konteynere kopyalıyoruz
+ARG JAR_FILE=target/taskmanager-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} app.jar
 
-FROM maven:3.8.5-openjdk-17 AS build
-COPY . .
-RUN mvn clean package -DskipTests
-
-FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/task-manager-0.0.1-SNAPSHOT.jar demo.jar
+# Uygulama portunu expose ediyoruz
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","demo.jar"]
+
+# Uygulamayı çalıştırıyoruz
+ENTRYPOINT ["java", "-jar", "/app.jar"]

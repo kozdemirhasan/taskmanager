@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr" xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Görevlerim - Görev Takip Sistemi</title>
+    <title>My Tasks - Task Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -76,7 +76,7 @@
             overflow-y: auto;          /* Sadece gerektiğinde kaydırma çubuğu */
             padding: 0.5rem;
             border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
+            /* border-radius: 0.25rem; */
             background-color: #f8f9fa;
             display: block;           /* Block element olarak göster */
             width: 100%;             /* Tam genişlik */
@@ -111,7 +111,7 @@
         .card-title::-webkit-scrollbar-thumb,
         .description-text::-webkit-scrollbar-thumb {
             background-color: #dee2e6;
-            border-radius: 4px;
+            border-radius: 0px;
         }
 
         .task-card.overdue {
@@ -174,7 +174,7 @@
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
             line-height: 1.5;
-            border-radius: 0.2rem;
+            border-radius: 0.0rem;
         }
         
         textarea.form-control-sm {
@@ -204,36 +204,36 @@
     <!-- Navbar başlangıç -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Görev Takip</a>
+            <a class="navbar-brand" href="/">Task Management</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/tasks/create">Yeni Görev</a>
+                        <a class="nav-link" href="/tasks/create">New Task</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/tasks/my">Görevlerim</a>
+                        <a class="nav-link active" href="/tasks/my">My Tasks</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/friends">
-                            <i class="fas fa-users me-1"></i> Arkadaşlarım
+                            <i class="fas fa-users me-1"></i> Friends
                         </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>
-                            <span sec:authentication="name">Kullanıcı</span>
+                            <span sec:authentication="name">User</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
                                 <form th:action="@{/auth/logout}" method="POST">
                                     <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Çıkış Yap
+                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
                                     </button>
                                 </form>
                             </li>
@@ -243,41 +243,41 @@
             </div>
         </div>
     </nav>
-    <!-- Navbar bitiş -->
+    <!-- End of Navbar -->
 
     <div class="container mt-4">
-        <!-- Filtre bölümünü güncelle -->
+        <!-- Update Filter Section -->
         <div class="mb-4">
             <form method="get" class="row g-3 align-items-center">
                 <div class="col-auto">
-                    <label class="col-form-label">Durum Filtresi:</label>
+                    <label class="col-form-label">Status Filter:</label>
                 </div>
                 <div class="col-auto">
                     <select name="statusFilter" class="form-select" onchange="this.form.submit()">
                         <option value="">
-                            <i class="fas fa-filter"></i> Tümü
+                            <i class="fas fa-filter"></i> All
                         </option>
                         <option value="OVERDUE" th:selected="${currentStatusFilter == 'OVERDUE'}">
-                            <i class="fas fa-exclamation-circle text-danger"></i> Süresi Geçmiş
+                            <i class="fas fa-exclamation-circle text-danger"></i> Overdue
                         </option>
                         <option th:each="status : ${statuses}"
                                 th:value="${status.name()}"
                                 th:selected="${status.name() == currentStatusFilter}">
-                            <i th:class="${'fas ' + 
-                                (status.name() == 'COMPLETED' ? 'fa-check-circle text-success' : 
-                                 status.name() == 'CANCELLED' ? 'fa-times-circle text-danger' : 
-                                 'fa-clock text-warning')}"></i>
+                            <i th:class="${'fas ' +
+                            (status.name() == 'COMPLETED' ? 'fa-check-circle text-success' :
+                             status.name() == 'CANCELLED' ? 'fa-times-circle text-danger' :
+                             'fa-clock text-warning')}"></i>
                             [[${status.displayValue}]]
                         </option>
                     </select>
                 </div>
-                
+
                 <div class="col-auto ms-4">
-                    <label class="col-form-label">Öncelik Filtresi:</label>
+                    <label class="col-form-label">Priority Filter:</label>
                 </div>
                 <div class="col-auto">
                     <select name="priorityFilter" class="form-select" onchange="this.form.submit()">
-                        <option value="">Tümü</option>
+                        <option value="">All</option>
                         <option th:each="priority : ${priorities}"
                                 th:value="${priority.name()}"
                                 th:text="${priority.displayValue}"
@@ -288,10 +288,10 @@
             </form>
         </div>
 
-        <!-- Oluşturduğum Görevler -->
+        <!-- Tasks I Created -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Yaptığım Görevlendirmeler</h5>
+                <h3 class="mb-0">My Task Assignments</h3>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -299,64 +299,64 @@
                         <div th:class="'card task-card status-' + ${task.status.name()}"
                              th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0" th:text="${task.title}">Görev Başlığı</h5>
-                                <i th:class="${'status-icon fas ' + 
-                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
-                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
-                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
-                                              'fa-clock pending')}"
+                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
+                                <i th:class="${'status-icon fas ' +
+                                         (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
+                                          task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
+                                          (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
+                                          'fa-clock pending')}"
                                    th:title="${task.status.displayValue}"></i>
                             </div>
                             <div class="card-body">
-                                <p class="card-text description-text" th:text="${task.description}">Açıklama</p>
+                                <p class="card-text description-text" th:text="${task.description}">Description</p>
                                 <hr class="my-2">
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        <i class="fas fa-users me-1"></i> Görevliler:
+                                        <i class="fas fa-users me-1"></i> Assignees:
                                         <span th:each="assignee, iterStat : ${task.assignees}">
-                                            <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>
-                                        </span>
+                                        <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>
+                                    </span>
                                     </small>
                                 </p>
                                 <p class="card-text">
                                     <small class="text-muted">
                                         <i class="fas fa-clock me-1"></i>
                                         <span th:class="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline) ? 'text-danger fw-bold' : ''}"
-                                              th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Tarih</span>
+                                              th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Date</span>
                                     </small>
                                 </p>
 
-                                <!-- Açıklama Ekleme Alanı -->
+                                <!-- Add Note Section -->
                                 <div class="mb-3" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
-                                    <textarea class="form-control form-control-sm mb-2" 
-                                            th:id="'taskNote-' + ${task.id}" 
-                                            rows="2" 
-                                            placeholder="Görev ile ilgili açıklama ekleyin..."></textarea>
+                                <textarea class="form-control form-control-sm mb-2"
+                                          th:id="'taskNote-' + ${task.id}"
+                                          rows="2"
+                                          placeholder="Add a note related to the task..."></textarea>
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <button class="btn btn-sm btn-primary" th:onclick="'editTask(' + ${task.id} + ')'">
-                                        <i class="fas fa-edit me-1"></i> Düzenle
+                                        <i class="fas fa-edit me-1"></i> Edit
                                     </button>
-                                    
-                                    <!-- Açıklama Ekleme Butonu -->
-                                    <button class="btn btn-sm btn-info" 
+
+                                    <!-- Add Note Button -->
+                                    <button class="btn btn-sm btn-info"
                                             th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}"
                                             th:onclick="'addTaskNote(' + ${task.id} + ')'">
-                                        <i class="fas fa-comment me-1"></i> Açıklama Ekle
+                                        <i class="fas fa-comment me-1"></i> Add Note
                                     </button>
-                                    
-                                    <button class="btn btn-sm btn-danger" 
+
+                                    <button class="btn btn-sm btn-danger"
                                             th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}"
                                             th:onclick="'cancelTask(' + ${task.id} + ')'">
-                                        <i class="fas fa-times me-1"></i> İptal Et
+                                        <i class="fas fa-times me-1"></i> Cancel
                                     </button>
                                 </div>
 
-                                <!-- Görev Geçmişi Butonu -->
-                                <button class="btn btn-sm btn-info mt-2 w-100" 
+                                <!-- Task History Button -->
+                                <button class="btn btn-sm btn-info mt-2 w-100"
                                         th:onclick="'showTaskHistory(' + ${task.id} + ')'">
-                                    <i class="fas fa-history me-1"></i> Görev Geçmişi
+                                    <i class="fas fa-history me-1"></i> Task History
                                 </button>
                             </div>
                         </div>
@@ -365,67 +365,67 @@
             </div>
         </div>
 
-        <!-- Görevlendirildiğim Görevler -->
+        <!-- Tasks Assigned to Me -->
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Yapacağım Görevler</h5>
+                <h3 class="mb-0">Tasks to Do</h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div th:each="task : ${assignedTasks}" class="col-md-4">
-                        <div class="card task-card mb-3" 
+                        <div class="card task-card mb-3"
                              th:classappend="${'status-' + task.status.name()}"
                              th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}"
                              th:data-priority="${task.priority}">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0" th:text="${task.title}">Görev Başlığı</h5>
-                                <i th:class="${'status-icon fas ' + 
-                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
-                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
-                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
-                                              'fa-clock pending')}"
+                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
+                                <i th:class="${'status-icon fas ' +
+                                         (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
+                                          task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
+                                          (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
+                                          'fa-clock pending')}"
                                    th:title="${task.status.displayValue}"></i>
                             </div>
                             <div class="card-body">
-                                <p class="card-text description-text" th:text="${task.description}">Açıklama</p>
+                                <p class="card-text description-text" th:text="${task.description}">Description</p>
                                 <hr class="my-2">
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        <i class="fas fa-users me-1"></i> Diğer Görevliler:
+                                        <i class="fas fa-users me-1"></i> Other Assignees:
                                         <span th:if="${task.assignees.size() > 1}">
-                                            <span th:each="assignee, iterStat : ${task.assignees}" 
-                                                  th:unless="${assignee.id == currentUser.id}">
-                                                <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>
-                                            </span>
+                                        <span th:each="assignee, iterStat : ${task.assignees}"
+                                              th:unless="${assignee.id == currentUser.id}">
+                                            <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>
                                         </span>
-                                        <span th:if="${task.assignees.size() <= 1}">Başka görevli yok</span>
+                                    </span>
+                                        <span th:if="${task.assignees.size() <= 1}">No other assignees</span>
                                     </small>
                                 </p>
                                 <p class="card-text">
                                     <small class="text-muted">
                                         <i class="fas fa-clock me-1"></i>
                                         <span th:class="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline) ? 'text-danger fw-bold' : ''}"
-                                              th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Tarih</span>
+                                              th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Date</span>
                                     </small>
                                 </p>
                                 <div class="mb-3" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
-                                    <textarea class="form-control form-control-sm mb-2" 
-                                            th:id="'taskNote-' + ${task.id}" 
-                                            rows="2" 
-                                            placeholder="Görev ile ilgili açıklama ekleyin..."></textarea>
+                                <textarea class="form-control form-control-sm mb-2"
+                                          th:id="'taskNote-' + ${task.id}"
+                                          rows="2"
+                                          placeholder="Add a note related to the task..."></textarea>
                                     <div class="d-flex justify-content-between">
                                         <button class="btn btn-sm btn-info" th:onclick="'addTaskNote(' + ${task.id} + ')'">
-                                            <i class="fas fa-comment me-1"></i> Açıklama Ekle
+                                            <i class="fas fa-comment me-1"></i> Add Note
                                         </button>
                                         <button class="btn btn-sm btn-success" th:onclick="'completeTask(' + ${task.id} + ')'">
-                                            <i class="fas fa-check me-1"></i> Tamamla
+                                            <i class="fas fa-check me-1"></i> Complete
                                         </button>
                                     </div>
                                 </div>
-                                <!-- Görev Geçmişi Butonu -->
-                                <button class="btn btn-sm btn-info mt-2 w-100" 
+                                <!-- Task History Button -->
+                                <button class="btn btn-sm btn-info mt-2 w-100"
                                         th:onclick="'showTaskHistory(' + ${task.id} + ')'">
-                                    <i class="fas fa-history me-1"></i> Görev Geçmişi
+                                    <i class="fas fa-history me-1"></i> Task History
                                 </button>
                             </div>
                         </div>
@@ -435,13 +435,15 @@
         </div>
     </div>
 
+
     <!-- Görev Geçmişi Modal -->
+    <!-- Task History Modal -->
     <div class="modal fade" id="taskHistoryModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="fas fa-history me-1"></i> Görev Geçmişi
+                        <i class="fas fa-history me-1"></i> Task History
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -450,14 +452,15 @@
                         <h6 class="task-title mb-2"></h6>
                         <div class="task-status"></div>
                     </div>
-                    
+
                     <div class="timeline">
-                        <!-- Görev geçmişi buraya dinamik olarak yüklenecek -->
+                        <!-- Task history will be dynamically loaded here -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -468,7 +471,7 @@
     }
 
     function cancelTask(taskId) {
-        if (confirm('Görevi iptal etmek istediğinize emin misiniz?')) {
+        if (confirm('Are you sure you want to cancel the task?')) {
             fetch('/tasks/' + taskId + '/cancel', {
                 method: 'POST',
                 headers: {
@@ -485,7 +488,7 @@
     }
 
     function completeTask(taskId) {
-        if (confirm('Görevi tamamlamak istediğinize emin misiniz?')) {
+        if (confirm('Are you sure you want to complete the task?')) {
             fetch('/tasks/' + taskId + '/complete', {
                 method: 'POST',
                 headers: {
@@ -497,14 +500,14 @@
                 alert(result);
                 location.reload();
             })
-            .catch(error => alert('Hata oluştu: ' + error));
+            .catch(error => alert('Error occurred: ' + error));
         }
     }
 
     function addTaskNote(taskId) {
         const note = document.getElementById('taskNote-' + taskId).value;
         if (!note.trim()) {
-            alert('Lütfen bir açıklama girin');
+            alert('Please enter a description');
             return;
         }
 
@@ -520,7 +523,7 @@
             alert(result);
             location.reload();
         })
-        .catch(error => alert('Hata oluştu: ' + error));
+        .catch(error => alert('Error: ' + error));
     }
 
     function showTaskHistory(taskId) {
@@ -595,7 +598,7 @@
                                     </div>
                                     <div class="timeline-content">
                                         <div class="d-flex justify-content-between">
-                                            <strong>${event.data.user.firstName} ${event.data.user.lastName} görevi tamamladı</strong>
+                                            <strong>${event.data.user.firstName} ${event.data.user.lastName} completed the task</strong>
                                             <small class="text-muted">${formatDate(event.data.date)}</small>
                                         </div>
                                     </div>
@@ -604,14 +607,14 @@
                         }
                     });
                 } else {
-                    timelineHtml = '<div class="text-center text-muted">Henüz görev geçmişi bulunmuyor.</div>';
+                    timelineHtml = '<div class="text-center text-muted">There is no duty history yet.</div>';
                 }
                 
                 timeline.innerHTML = timelineHtml;
                 modal.show();
             })
             .catch(error => {
-                alert('Görev geçmişi yüklenirken hata oluştu: ' + error.message);
+                alert('Error loading task history: ' + error.message);
                 console.error(error);
             });
     }
@@ -628,16 +631,16 @@
 
     function getStatusText(status) {
         const statusTexts = {
-            'PENDING': 'Beklemede',
-            'COMPLETED': 'Tamamlandı',
-            'CANCELLED': 'İptal Edildi'
+            'PENDING': 'Pending',
+            'COMPLETED': 'Completed',
+            'CANCELLED': 'Cancelled'
         };
         return statusTexts[status];
     }
 
     function formatDate(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleString('tr-TR', {
+        return date.toLocaleString('de-DE', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -652,7 +655,7 @@
             minimumResultsForSearch: Infinity,
             templateResult: function(state) {
                 if (!state.id) {
-                    return $('<span><i class="fas fa-filter"></i> Tümü</span>');
+                    return $('<span><i class="fas fa-filter"></i> All</span>');
                 }
                 
                 let icon = '';
@@ -670,7 +673,7 @@
             },
             templateSelection: function(state) {
                 if (!state.id) {
-                    return $('<span><i class="fas fa-filter"></i> Tümü</span>');
+                    return $('<span><i class="fas fa-filter"></i> All</span>');
                 }
                 
                 let icon = '';

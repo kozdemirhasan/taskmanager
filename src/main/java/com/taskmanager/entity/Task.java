@@ -50,8 +50,8 @@ public class Task {
     @Column(nullable = false)
     private LocalDateTime deadline;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "creator_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id")
     private User creator;
     
     @ManyToMany(fetch = FetchType.EAGER)
@@ -96,15 +96,24 @@ public class Task {
         this.completedAt = LocalDateTime.now();
     }
     
-    public void addNote(User user, String note) {
+    public TaskNote addNote(User user, String note) {
         TaskNote taskNote = new TaskNote();
         taskNote.setTask(this);
         taskNote.setUser(user);
         taskNote.setNote(note);
         this.notes.add(taskNote);
+        return taskNote;
     }
     
     public boolean isOverdue() {
         return LocalDateTime.now().isAfter(this.deadline) && this.status == TaskStatus.PENDING;
+    }
+    
+    public User getCreator() {
+        return creator;
+    }
+    
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 } 

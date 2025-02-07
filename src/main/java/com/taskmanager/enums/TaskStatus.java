@@ -1,9 +1,9 @@
 package com.taskmanager.enums;
 
 public enum TaskStatus {
-    PENDING("Beklemede"),
-    COMPLETED("Tamamlandı"),
-    CANCELLED("İptal Edildi");
+    PENDING("Pending"),
+    COMPLETED("Completed"),
+    CANCELLED("Cancelled");
     
     private final String displayValue;
     

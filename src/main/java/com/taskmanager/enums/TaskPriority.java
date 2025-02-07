@@ -1,10 +1,10 @@
 package com.taskmanager.enums;
 
 public enum TaskPriority {
-    LOW("Düşük"),
-    MEDIUM("Orta"),
-    HIGH("Yüksek"),
-    URGENT("Acil");
+    LOW("Low"),
+    MEDIUM("Middle"),
+    HIGH("High"),
+    URGENT("Emergency");
     
     private final String displayValue;
     

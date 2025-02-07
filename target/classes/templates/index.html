@@ -12,21 +12,21 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Görev Takip</a>
+            <a class="navbar-brand" href="#">Task Management</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/tasks/create">Yeni Görev</a>
+                        <a class="nav-link" href="/tasks/create">New Task</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="myTasksBtn">Görevlerim</a>
+                        <a class="nav-link" href="/tasks/my" id="myTasksBtn">My Tasks</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/friends">
-                            <i class="fas fa-users me-1"></i> Arkadaşlarım
+                            <i class="fas fa-users me-1"></i> Friends
                         </a>
                     </li>
                 </ul>
@@ -35,13 +35,13 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>
-                            <span sec:authentication="name">Kullanıcı</span>
+                            <span sec:authentication="name">User</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
                                 <form th:action="@{/auth/logout}" method="POST">
                                     <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Çıkış Yap
+                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
                                     </button>
                                 </form>
                             </li>
@@ -63,34 +63,34 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Yeni Görev Oluştur</h5>
+                    <h5 class="modal-title">Create New Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="createTaskForm">
                         <div class="mb-3">
-                            <label class="form-label">Başlık</label>
+                            <label class="form-label">Title</label>
                             <input type="text" class="form-control" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Açıklama</label>
+                            <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Bitiş Tarihi</label>
+                            <label class="form-label">End Date</label>
                             <input type="datetime-local" class="form-control" name="deadline" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Öncelik</label>
+                            <label class="form-label">Priority</label>
                             <select class="form-control" name="priority" required>
-                                <option value="LOW">Düşük</option>
-                                <option value="MEDIUM">Orta</option>
-                                <option value="HIGH">Yüksek</option>
-                                <option value="URGENT">Acil</option>
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Middle</option>
+                                <option value="HIGH">High</option>
+                                <option value="URGENT">Emergency</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Görevliler</label>
+                            <label class="form-label">Officers</label>
                             <select class="form-control" name="assignees" multiple required>
                                 <!-- Kullanıcılar dinamik olarak eklenecek -->
                             </select>
@@ -98,8 +98,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Kaydet</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Save</button>
                 </div>
             </div>
         </div>
