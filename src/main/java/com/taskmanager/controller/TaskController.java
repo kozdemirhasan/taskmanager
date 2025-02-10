@@ -112,14 +112,10 @@ public class TaskController {
         // Durum filtresi uygula
         if (statusFilter == null) {
             // Sayfa ilk açıldığında varsayılan olarak PENDING görevleri göster
-            statusFilter = TaskStatus.PENDING.name();
-            assignedTasks = assignedTasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.PENDING)
-                .collect(Collectors.toList());
-            createdTasks = createdTasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.PENDING)
-                .collect(Collectors.toList());
-        } else if ("OVERDUE".equals(statusFilter)) {
+            statusFilter = "PENDING";
+        }
+
+        if ("OVERDUE".equals(statusFilter)) {
             // Süresi geçmiş görevleri filtrele
             LocalDateTime now = LocalDateTime.now();
             assignedTasks = assignedTasks.stream()
@@ -128,8 +124,25 @@ public class TaskController {
             createdTasks = createdTasks.stream()
                 .filter(task -> task.getStatus() == TaskStatus.PENDING && task.getDeadline().isBefore(now))
                 .collect(Collectors.toList());
+        } else if ("PENDING_ALL".equals(statusFilter)) {
+            // Hem bekleyen hem süresi geçmiş görevleri filtrele
+            assignedTasks = assignedTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .collect(Collectors.toList());
+            createdTasks = createdTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .collect(Collectors.toList());
+        } else if ("PENDING".equals(statusFilter)) {
+            // Sadece bekleyen ve süresi geçmemiş görevleri filtrele
+            LocalDateTime now = LocalDateTime.now();
+            assignedTasks = assignedTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING && !task.getDeadline().isBefore(now))
+                .collect(Collectors.toList());
+            createdTasks = createdTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING && !task.getDeadline().isBefore(now))
+                .collect(Collectors.toList());
         } else if (!statusFilter.isEmpty()) {
-            // Belirli bir durum seçildiğinde o duruma göre filtrele
+            // Diğer durumlar için mevcut filtreleme
             TaskStatus status = TaskStatus.valueOf(statusFilter);
             assignedTasks = assignedTasks.stream()
                 .filter(task -> task.getStatus() == status)

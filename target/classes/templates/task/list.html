@@ -198,6 +198,15 @@
     --bs-border-radius: 0rem; /* Bootstrap değişkenini sıfırla */
     border-radius: 0rem !important; /* Önceliği yükselt */
 }
+
+        .select2-container {
+            min-width: 250px !important;  /* Minimum genişlik */
+        }
+        
+        /* Status filter için özel genişlik */
+        select[name="statusFilter"] + .select2-container {
+            min-width: 300px !important;  /* Status filter için daha geniş */
+        }
     </style>
 </head>
 <body>
@@ -258,7 +267,10 @@
                             <i class="fas fa-filter"></i> All
                         </option>
                         <option value="OVERDUE" th:selected="${currentStatusFilter == 'OVERDUE'}">
-                            <i class="fas fa-exclamation-circle text-danger"></i> Overdue
+                            <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue
+                        </option>
+                        <option value="PENDING_ALL" th:selected="${currentStatusFilter == 'PENDING_ALL'}">
+                            <i class="fas fa-clock text-warning"></i> Pending + <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue
                         </option>
                         <option th:each="status : ${statuses}"
                                 th:value="${status.name()}"
@@ -660,7 +672,9 @@
                 
                 let icon = '';
                 if (state.id === 'OVERDUE') {
-                    icon = '<i class="fas fa-exclamation-circle text-danger"></i>';
+                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
+                } else if (state.id === 'PENDING_ALL') {
+                    return $('<span><i class="fas fa-clock text-warning"></i> Pending + <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue</span>');
                 } else if (state.id === 'COMPLETED') {
                     icon = '<i class="fas fa-check-circle text-success"></i>';
                 } else if (state.id === 'CANCELLED') {
@@ -678,7 +692,9 @@
                 
                 let icon = '';
                 if (state.id === 'OVERDUE') {
-                    icon = '<i class="fas fa-exclamation-circle text-danger"></i>';
+                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
+                } else if (state.id === 'PENDING_ALL') {
+                    return $('<span><i class="fas fa-clock text-warning"></i> Pending + <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue</span>');
                 } else if (state.id === 'COMPLETED') {
                     icon = '<i class="fas fa-check-circle text-success"></i>';
                 } else if (state.id === 'CANCELLED') {
