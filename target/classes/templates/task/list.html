@@ -267,7 +267,7 @@
                             <i class="fas fa-filter"></i> All
                         </option>
                         <option value="OVERDUE" th:selected="${currentStatusFilter == 'OVERDUE'}">
-                            <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue
+                            <i class="fas fa-exclamation-circle text-danger"></i> Overdue
                         </option>
                         <option value="PENDING_ALL" th:selected="${currentStatusFilter == 'PENDING_ALL'}">
                             <i class="fas fa-clock text-warning"></i> Pending + <i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i> Overdue
@@ -295,6 +295,25 @@
                                 th:text="${priority.displayValue}"
                                 th:selected="${priority.name() == currentPriorityFilter}">
                         </option>
+                    </select>
+                </div>
+
+                <div class="col-auto ms-4">
+                    <label class="col-form-label">Date Range:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="dateRangeFilter" class="form-select" onchange="this.form.submit()">
+                        <option value="" th:text="#{task.filter.date.all}">All</option>
+                        <option value="OVERDUE" th:text="#{task.filter.date.overdue}" 
+                                th:selected="${currentDateRangeFilter == 'OVERDUE'}">Overdue</option>
+                        <option value="TODAY" th:text="#{task.filter.date.today}"
+                                th:selected="${currentDateRangeFilter == 'TODAY'}">Due Today</option>
+                        <option value="THIS_WEEK" th:text="#{task.filter.date.this_week}"
+                                th:selected="${currentDateRangeFilter == 'THIS_WEEK'}">Due This Week</option>
+                        <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}"
+                                th:selected="${currentDateRangeFilter == 'NEXT_TWO_WEEKS'}">Due in Two Weeks</option>
+                        <option value="THIS_MONTH" th:text="#{task.filter.date.this_month}"
+                                th:selected="${currentDateRangeFilter == 'THIS_MONTH'}">Due This Month</option>
                     </select>
                 </div>
             </form>
@@ -701,6 +720,51 @@
                     icon = '<i class="fas fa-times-circle text-danger"></i>';
                 } else if (state.id === 'PENDING') {
                     icon = '<i class="fas fa-clock text-warning"></i>';
+                }
+                
+                return $('<span>' + icon + ' ' + state.text + '</span>');
+            }
+        });
+
+        $('select[name="dateRangeFilter"]').select2({
+            theme: 'bootstrap-5',
+            minimumResultsForSearch: Infinity,
+            templateResult: function(state) {
+                if (!state.id) {
+                    return $('<span><i class="fas fa-calendar"></i> ' + state.text + '</span>');
+                }
+                
+                let icon = '';
+                if (state.id === 'OVERDUE') {
+                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
+                } else if (state.id === 'TODAY') {
+                    icon = '<i class="fas fa-clock text-warning"></i>';
+                } else if (state.id === 'THIS_WEEK') {
+                    icon = '<i class="fas fa-calendar-week text-info"></i>';
+                } else if (state.id === 'NEXT_TWO_WEEKS') {
+                    icon = '<i class="fas fa-calendar-alt text-primary"></i>';
+                } else if (state.id === 'THIS_MONTH') {
+                    icon = '<i class="fas fa-calendar-alt text-success"></i>';
+                }
+                
+                return $('<span>' + icon + ' ' + state.text + '</span>');
+            },
+            templateSelection: function(state) {
+                if (!state.id) {
+                    return $('<span><i class="fas fa-calendar"></i> ' + state.text + '</span>');
+                }
+                
+                let icon = '';
+                if (state.id === 'OVERDUE') {
+                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
+                } else if (state.id === 'TODAY') {
+                    icon = '<i class="fas fa-clock text-warning"></i>';
+                } else if (state.id === 'THIS_WEEK') {
+                    icon = '<i class="fas fa-calendar-week text-info"></i>';
+                } else if (state.id === 'NEXT_TWO_WEEKS') {
+                    icon = '<i class="fas fa-calendar-alt text-primary"></i>';
+                } else if (state.id === 'THIS_MONTH') {
+                    icon = '<i class="fas fa-calendar-alt text-success"></i>';
                 }
                 
                 return $('<span>' + icon + ' ' + state.text + '</span>');
