@@ -13,7 +13,8 @@
     <style>
         .task-card {
             margin-bottom: 20px;
-            border-radius: 0;  /* Keskin köşeler */
+            border-radius: 0;
+            border: 1px solid #dee2e6;  /* Tüm kenarlara 1px border */
         }
 
         /* Başlık alanını genişlet */
@@ -25,7 +26,7 @@
 
         /* Süresi geçmiş görevler için turuncu stil */
         .task-card.status-PENDING[data-overdue="true"] {
-            border-left: 5px solid #fd7e14;  /* Bootstrap turuncu */
+            border-color: #fd7e14;  /* Bootstrap turuncu */
         }
         .task-card.status-PENDING[data-overdue="true"] .card-header {
             background-color: #fd7e14;
@@ -33,7 +34,7 @@
         }
         
         .status-PENDING { 
-            border-left: 5px solid #ffc107;
+            border-color: #ffc107;  /* Sarı */
         }
         .status-PENDING .card-header {
             background-color: #ffc107;
@@ -47,7 +48,7 @@
         }
         
         .status-COMPLETED { 
-            border-left: 5px solid #28a745;
+            border-color: #28a745;  /* Yeşil */
         }
         .status-COMPLETED .card-header {
             background-color: #28a745;
@@ -55,7 +56,7 @@
         }
         
         .status-CANCELLED { 
-            border-left: 5px solid #dc3545;
+            border-color: #dc3545;  /* Kırmızı */
         }
         .status-CANCELLED .card-header {
             background-color: #dc3545;
@@ -180,6 +181,28 @@
         textarea.form-control-sm {
             font-size: 0.875rem;
             padding: 0.25rem 0.5rem;
+            resize: none;  /* Genişletme özelliğini kaldır */
+            overflow-y: auto;  /* Dikey scroll ekle */
+            min-height: 50px;  /* Minimum yükseklik */
+            max-height: 100px; /* Maksimum yükseklik */
+        }
+
+        /* Scrollbar stilini özelleştir */
+        textarea.form-control-sm::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        textarea.form-control-sm::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        textarea.form-control-sm::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        textarea.form-control-sm::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
 
         /* İptal edilen görevlerin simgesi için özel stil */
@@ -198,6 +221,255 @@
     --bs-border-radius: 0rem; /* Bootstrap değişkenini sıfırla */
     border-radius: 0rem !important; /* Önceliği yükselt */
 }
+
+        .add-note-form {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 0.75rem;  /* Padding'i azalttık */
+            margin: -1rem;
+            margin-top: 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .add-note-form .btn {
+            min-width: 38px;     /* Buton genişliğini artırdık */
+            padding: 0.375rem;   /* İç boşluğu artırdık */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-note-form .form-control-sm {
+            height: calc(1.75em + 0.75rem + 2px); /* Input yüksekliğini artırdık */
+            font-size: 0.9rem;   /* Font boyutunu biraz artırdık */
+        }
+
+        .add-note-form .btn i {
+            font-size: 1rem;    /* İkon boyutunu artırdık */
+        }
+
+        .timeline {
+            margin-bottom: 0.75rem;  /* Timeline ile form arasındaki boşluğu azalt */
+        }
+
+        /* Not ekleme alanı için stiller */
+        .d-flex textarea.form-control-sm {
+            flex: 1;  /* Textarea'nın mevcut alanı doldurmasını sağlar */
+            height: calc(1.5em + 0.75rem + 2px); /* Input yüksekliğini buton ile aynı yap */
+            resize: none;  /* Yeniden boyutlandırmayı kapat */
+            padding: 0.375rem 0.75rem; /* Padding'i ayarla */
+            line-height: 1.5;
+            min-height: unset; /* Minimum yükseklik sınırını kaldır */
+            max-height: unset; /* Maksimum yükseklik sınırını kaldır */
+        }
+
+        .d-flex .btn-info {
+            width: 38px;
+            height: calc(1.5em + 0.75rem + 2px); /* Buton yüksekliğini textarea ile aynı yap */
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .d-flex .btn-info i {
+            font-size: 0.875rem;
+        }
+
+        /* Üç nokta menüsü için stiller */
+        .dropdown .btn-link {
+            color: #6c757d;
+            transition: color 0.2s;
+        }
+
+        .dropdown .btn-link:hover {
+            color: #000;
+        }
+
+        .dropdown-menu {
+            min-width: 120px;
+            padding: 0.25rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .dropdown-item {
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .dropdown-item i {
+            width: 1rem;
+            text-align: center;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #dc3545;
+            color: white !important;
+        }
+
+        /* Hamburger menü için stiller */
+        .dropdown .btn-light {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown .btn-light:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .dropdown .btn-light i {
+            font-size: 1rem;
+        }
+
+        .dropdown-menu {
+            min-width: 150px;  /* Menü genişliğini artırdık */
+            padding: 0.25rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;  /* Padding'i artırdık */
+            font-size: 0.875rem;
+        }
+
+        .dropdown-item i {
+            width: 1.2rem;  /* İkon genişliğini artırdık */
+            text-align: center;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item.text-success:hover {
+            background-color: #28a745;
+            color: white !important;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #dc3545;
+            color: white !important;
+        }
+
+        .card-header .status-icon {
+            font-size: 1.8rem;  /* Simge boyutunu artırdık */
+            margin-right: 0.75rem;  /* Sağ taraftaki boşluğu da artırdık */
+        }
+
+        .card-header .card-title {
+            margin-bottom: 0;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;  /* Başlık boyutunu da ayarlayalım */
+        }
+
+        /* İkonların renklerini düzelt */
+        .status-PENDING .status-icon.pending { 
+            color: #ffffff !important;  /* Beyaz renk */
+            font-size: 1.8rem;
+        }
+        
+        .status-COMPLETED .status-icon.completed { 
+            color: #ffffff !important;  /* Beyaz renk */
+            font-size: 1.8rem;
+        }
+        
+        .status-CANCELLED .status-icon.cancelled { 
+            color: #ffffff !important;  /* Beyaz renk */
+            font-size: 1.8rem;
+        }
+
+        /* Ana kartlar için stiller */
+        .tasks-created-card > .card-header {  /* > işareti ile sadece ana kartın başlığını seç */
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
+        }
+
+        .tasks-assigned-card > .card-header {  /* > işareti ile sadece ana kartın başlığını seç */
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%) !important;
+        }
+
+        /* Görev kartları için eski stiller */
+        .task-card.status-PENDING[data-overdue="true"] .card-header {
+            background-color: #fd7e14 !important;  /* !important ekleyerek gradyanı override et */
+            color: #fff;
+        }
+        
+        .status-PENDING .card-header {
+            background-color: #ffc107 !important;  /* !important ekleyerek gradyanı override et */
+            color: #000;
+        }
+        
+        .status-COMPLETED .card-header {
+            background-color: #28a745 !important;  /* !important ekleyerek gradyanı override et */
+            color: #fff;
+        }
+        
+        .status-CANCELLED .card-header {
+            background-color: #dc3545 !important;  /* !important ekleyerek gradyanı override et */
+            color: #fff;
+        }
+
+        .card-header .header-icon {
+            font-size: 1.5rem;
+        }
+
+        .tasks-created-card .card-body,
+        .tasks-assigned-card .card-body {
+            background-color: #f8f9fa;
+        }
+
+        /* Başlık alanındaki metin ve ikon için gölge efekti */
+        .card-header h3,
+        .card-header .header-icon {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Görev kartlarının başlık alanı için yeni stiller */
+        .task-card .card-header {
+            height: 80px;  /* Sabit yükseklik */
+            display: flex;
+            align-items: center;  /* Dikeyde ortalama */
+            padding: 0 1rem;  /* Yatayda padding */
+        }
+
+        /* Başlık metni için stil güncellemesi */
+        .task-card .card-header .card-title {
+            flex: 1;
+            margin: 0;
+            line-height: 1.3;
+            max-height: 60px;  /* Maksimum yükseklik */
+            overflow-y: auto;  /* Dikey scroll ekle */
+            padding-right: 10px;  /* Scrollbar için sağ padding */
+        }
+
+        /* Başlık scrollbar stilleri */
+        .task-card .card-header .card-title::-webkit-scrollbar {
+            width: 4px;  /* İnce scrollbar */
+        }
+
+        .task-card .card-header .card-title::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);  /* Yarı saydam beyaz arkaplan */
+            border-radius: 2px;
+        }
+
+        .task-card .card-header .card-title::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);  /* Yarı saydam beyaz scrollbar */
+            border-radius: 2px;
+        }
+
+        .task-card .card-header .card-title::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);  /* Hover durumunda daha belirgin */
+        }
+
+        /* İkonlar ve butonlar için düzenleme */
+        .task-card .card-header .status-icon,
+        .task-card .card-header .dropdown {
+            flex-shrink: 0;  /* İkon ve butonların küçülmesini engelle */
+        }
     </style>
 </head>
 <body>
@@ -248,27 +520,28 @@
     <div class="container mt-4">
         <!-- Update Filter Section -->
         <div class="mb-4">
-            <form method="get" class="row g-3 align-items-center">
+            <form id="filterForm" method="get" class="row g-3 align-items-center">
                 <div class="col-auto">
                     <label class="col-form-label">Status Filter:</label>
                 </div>
-                <div class="col-auto">
-                    <select name="statusFilter" class="form-select" onchange="this.form.submit()">
-                        <option value="">
-                            <i class="fas fa-filter"></i> All
-                        </option>
-                        <option value="OVERDUE" th:selected="${currentStatusFilter == 'OVERDUE'}">
-                            <i class="fas fa-exclamation-circle text-danger"></i> Overdue
-                        </option>
-                        <option th:each="status : ${statuses}"
-                                th:value="${status.name()}"
-                                th:selected="${status.name() == currentStatusFilter}">
-                            <i th:class="${'fas ' +
-                            (status.name() == 'COMPLETED' ? 'fa-check-circle text-success' :
-                             status.name() == 'CANCELLED' ? 'fa-times-circle text-danger' :
-                             'fa-clock text-warning')}"></i>
-                            [[${status.displayValue}]]
-                        </option>
+                <div class="col-auto" style="min-width: 200px;">
+                    <select name="statusFilter" class="form-select">
+                        <option value="" th:text="#{task.filter.all}" th:selected="${currentStatusFilter == null}">All</option>
+                        <option value="PENDING_ALL" 
+                                th:text="#{task.filter.pending_all}" 
+                                th:selected="${currentStatusFilter == 'PENDING_ALL'}">Pending + Overdue</option>
+                        <option value="PENDING" 
+                                th:text="#{task.filter.pending}" 
+                                th:selected="${currentStatusFilter == 'PENDING'}">Pending</option>
+                        <option value="OVERDUE" 
+                                th:text="#{task.filter.overdue}" 
+                                th:selected="${currentStatusFilter == 'OVERDUE'}">Overdue</option>
+                        <option value="COMPLETED" 
+                                th:text="#{task.filter.completed}" 
+                                th:selected="${currentStatusFilter == 'COMPLETED'}">Completed</option>
+                        <option value="CANCELLED" 
+                                th:text="#{task.filter.cancelled}" 
+                                th:selected="${currentStatusFilter == 'CANCELLED'}">Cancelled</option>
                     </select>
                 </div>
 
@@ -276,7 +549,7 @@
                     <label class="col-form-label">Priority Filter:</label>
                 </div>
                 <div class="col-auto">
-                    <select name="priorityFilter" class="form-select" onchange="this.form.submit()">
+                    <select name="priorityFilter" class="form-select">
                         <option value="">All</option>
                         <option th:each="priority : ${priorities}"
                                 th:value="${priority.name()}"
@@ -285,13 +558,30 @@
                         </option>
                     </select>
                 </div>
+
+                <div class="col-auto ms-4 date-range-group">
+                    <label class="col-form-label">Date Range:</label>
+                </div>
+                <div class="col-auto date-range-group">
+                    <select name="dateRangeFilter" class="form-select">
+                        <option value="" th:text="#{task.filter.date.all}">All</option>
+                        <option value="TODAY" th:text="#{task.filter.date.today}">Due Today</option>
+                        <option value="THREE_DAYS" th:text="#{task.filter.date.three_days}">Due in Three Days</option>
+                        <option value="THIS_WEEK" th:text="#{task.filter.date.this_week}">Due This Week</option>
+                        <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}">Due in Two Weeks</option>
+                        <option value="THIS_MONTH" th:text="#{task.filter.date.this_month}">Due This Month</option>
+                    </select>
+                </div>
             </form>
         </div>
 
-        <!-- Tasks I Created -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="mb-0">My Task Assignments</h3>
+        <!-- My Task Assignments kartı için -->
+        <div class="card mb-4 tasks-created-card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-tasks me-2 header-icon"></i>
+                    <h3 class="mb-0">My Task Assignments</h3>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -299,13 +589,34 @@
                         <div th:class="'card task-card status-' + ${task.status.name()}"
                              th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
-                                <i th:class="${'status-icon fas ' +
-                                         (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
-                                          task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
-                                          (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
-                                          'fa-clock pending')}"
-                                   th:title="${task.status.displayValue}"></i>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i th:class="${'status-icon fas ' +
+                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
+                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
+                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
+                                              'fa-clock pending')}"
+                                       th:title="${task.status.displayValue}"></i>
+                                    <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
+                                </div>
+                                
+                                <!-- Üç nokta menüsü -->
+                                <div class="dropdown" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
+                                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <button class="dropdown-item" th:onclick="'editTask(' + ${task.id} + ')'">
+                                                <i class="fas fa-edit me-2"></i> Edit
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item text-danger" th:onclick="'cancelTask(' + ${task.id} + ')'">
+                                                <i class="fas fa-times me-2"></i> Cancel
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <p class="card-text description-text" th:text="${task.description}">Description</p>
@@ -328,29 +639,15 @@
 
                                 <!-- Add Note Section -->
                                 <div class="mb-3" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
-                                <textarea class="form-control form-control-sm mb-2"
-                                          th:id="'taskNote-' + ${task.id}"
-                                          rows="2"
-                                          placeholder="Add a note related to the task..."></textarea>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <button class="btn btn-sm btn-primary" th:onclick="'editTask(' + ${task.id} + ')'">
-                                        <i class="fas fa-edit me-1"></i> Edit
-                                    </button>
-
-                                    <!-- Add Note Button -->
-                                    <button class="btn btn-sm btn-info"
-                                            th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}"
-                                            th:onclick="'addTaskNote(' + ${task.id} + ')'">
-                                        <i class="fas fa-comment me-1"></i> Add Note
-                                    </button>
-
-                                    <button class="btn btn-sm btn-danger"
-                                            th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}"
-                                            th:onclick="'cancelTask(' + ${task.id} + ')'">
-                                        <i class="fas fa-times me-1"></i> Cancel
-                                    </button>
+                                    <div class="d-flex gap-2">
+                                        <textarea class="form-control form-control-sm"
+                                                  th:id="'taskNote-' + ${task.id}"
+                                                  rows="1"
+                                                  placeholder="Add a note related to the task..."></textarea>
+                                        <button class="btn btn-info btn-sm align-self-center" th:onclick="'addTaskNote(' + ${task.id} + ')'">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- Task History Button -->
@@ -365,10 +662,13 @@
             </div>
         </div>
 
-        <!-- Tasks Assigned to Me -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="mb-0">Tasks to Do</h3>
+        <!-- Tasks to Do kartı için -->
+        <div class="card tasks-assigned-card">
+            <div class="card-header bg-info text-white">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-clipboard-list me-2 header-icon"></i>
+                    <h3 class="mb-0">Tasks to Do</h3>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -378,13 +678,29 @@
                              th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}"
                              th:data-priority="${task.priority}">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
-                                <i th:class="${'status-icon fas ' +
-                                         (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
-                                          task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
-                                          (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
-                                          'fa-clock pending')}"
-                                   th:title="${task.status.displayValue}"></i>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i th:class="${'status-icon fas ' +
+                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
+                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
+                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
+                                              'fa-clock pending')}"
+                                       th:title="${task.status.displayValue}"></i>
+                                    <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
+                                </div>
+                                
+                                <!-- Hamburger menü -->
+                                <div class="dropdown" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
+                                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <button class="dropdown-item text-success" th:onclick="'completeTask(' + ${task.id} + ')'">
+                                                <i class="fas fa-check me-2"></i> Complete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <p class="card-text description-text" th:text="${task.description}">Description</p>
@@ -408,20 +724,6 @@
                                               th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Date</span>
                                     </small>
                                 </p>
-                                <div class="mb-3" th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
-                                <textarea class="form-control form-control-sm mb-2"
-                                          th:id="'taskNote-' + ${task.id}"
-                                          rows="2"
-                                          placeholder="Add a note related to the task..."></textarea>
-                                    <div class="d-flex justify-content-between">
-                                        <button class="btn btn-sm btn-info" th:onclick="'addTaskNote(' + ${task.id} + ')'">
-                                            <i class="fas fa-comment me-1"></i> Add Note
-                                        </button>
-                                        <button class="btn btn-sm btn-success" th:onclick="'completeTask(' + ${task.id} + ')'">
-                                            <i class="fas fa-check me-1"></i> Complete
-                                        </button>
-                                    </div>
-                                </div>
                                 <!-- Task History Button -->
                                 <button class="btn btn-sm btn-info mt-2 w-100"
                                         th:onclick="'showTaskHistory(' + ${task.id} + ')'">
@@ -453,8 +755,19 @@
                         <div class="task-status"></div>
                     </div>
 
-                    <div class="timeline">
+                    <div class="timeline" style="max-height: 400px; overflow-y: auto;">
                         <!-- Task history will be dynamically loaded here -->
+                    </div>
+
+                    <!-- Yeni açıklama ekleme formu -->
+                    <div class="add-note-form mt-3 pt-3 border-top">
+                        <div class="d-flex gap-2">
+                            <input type="text" class="form-control form-control-sm" id="modalTaskNote" 
+                                   placeholder="Add a note...">
+                            <button type="button" class="btn btn-primary btn-sm px-2" id="modalAddNoteBtn">
+                                <i class="fas fa-paper-plane"></i>  <!-- İkonu değiştirdik -->
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -526,10 +839,72 @@
         .catch(error => alert('Error: ' + error));
     }
 
+    function addAssignedTaskNote(taskId) {
+        const note = document.getElementById('assignedTaskNote-' + taskId).value;
+        if (!note.trim()) {
+            alert('Please enter a note');
+            return;
+        }
+
+        fetch('/tasks/' + taskId + '/note', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ note: note })
+        })
+        .then(response => response.text())
+        .then(result => {
+            alert(result);
+            location.reload();
+        })
+        .catch(error => alert('Error: ' + error));
+    }
+
     function showTaskHistory(taskId) {
         const modal = new bootstrap.Modal(document.getElementById('taskHistoryModal'));
         const timeline = document.querySelector('#taskHistoryModal .timeline');
         
+        // Açıklama ekleme butonuna click handler ekle
+        const addNoteBtn = document.getElementById('modalAddNoteBtn');
+        const noteInput = document.getElementById('modalTaskNote');
+        
+        // Önceki event listener'ları temizle
+        addNoteBtn.replaceWith(addNoteBtn.cloneNode(true));
+        
+        // Yeni event listener ekle
+        document.getElementById('modalAddNoteBtn').addEventListener('click', () => {
+            const note = noteInput.value.trim();
+            if (!note) {
+                alert('Please enter a note');
+                return;
+            }
+
+            fetch(`/tasks/${taskId}/note`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ note: note })
+            })
+            .then(response => response.text())
+            .then(result => {
+                // Input'u temizle
+                noteInput.value = '';
+                
+                // History'yi yeniden yükle
+                showTaskHistory(taskId);
+            })
+            .catch(error => alert('Error: ' + error));
+        });
+
+        // Enter tuşu ile de göndermeyi sağla
+        noteInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('modalAddNoteBtn').click();
+            }
+        });
+
         fetch(`/tasks/${taskId}/history`)
             .then(response => response.json())
             .then(data => {
@@ -544,8 +919,6 @@
                 
                 // Timeline içeriğini oluştur
                 let timelineHtml = '';
-                
-                // Tüm olayları tarih sırasına göre birleştir
                 let allEvents = [];
                 
                 // Notları ekle
@@ -570,8 +943,8 @@
                     });
                 }
                 
-                // Olayları tarihe göre sırala (en yeni en üstte)
-                allEvents.sort((a, b) => b.date - a.date);
+                // Olayları tarihe göre sırala (en eski en üstte)
+                allEvents.sort((a, b) => a.date - b.date);
                 
                 if (allEvents.length > 0) {
                     allEvents.forEach(event => {
@@ -612,6 +985,14 @@
                 
                 timeline.innerHTML = timelineHtml;
                 modal.show();
+                
+                // Modal gösterildikten sonra scroll'u en alta kaydır
+                setTimeout(() => {
+                    const timeline = document.querySelector('#taskHistoryModal .timeline');
+                    if (timeline) {
+                        timeline.scrollTop = timeline.scrollHeight;
+                    }
+                }, 300); // Süreyi 300ms'ye çıkardık
             })
             .catch(error => {
                 alert('Error loading task history: ' + error.message);
@@ -650,48 +1031,85 @@
     }
 
     $(document).ready(function() {
-        $('select[name="statusFilter"]').select2({
+        // Select2 initialization
+        $('select[name="statusFilter"], select[name="dateRangeFilter"], select[name="priorityFilter"]').select2({
             theme: 'bootstrap-5',
             minimumResultsForSearch: Infinity,
-            templateResult: function(state) {
-                if (!state.id) {
-                    return $('<span><i class="fas fa-filter"></i> All</span>');
-                }
-                
-                let icon = '';
-                if (state.id === 'OVERDUE') {
-                    // icon = '<i class="fas fa-exclamation-circle text-danger"></i>';
-                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
-                } else if (state.id === 'COMPLETED') {
-                    icon = '<i class="fas fa-check-circle text-success"></i>';
-                } else if (state.id === 'CANCELLED') {
-                    icon = '<i class="fas fa-times-circle text-danger"></i>';
-                } else if (state.id === 'PENDING') {
-                    icon = '<i class="fas fa-clock text-warning"></i>';
-                }
-                
-                return $('<span>' + icon + ' ' + state.text + '</span>');
-            },
-            templateSelection: function(state) {
-                if (!state.id) {
-                    return $('<span><i class="fas fa-filter"></i> All</span>');
-                }
-                
-                let icon = '';
-                if (state.id === 'OVERDUE') {
-                    // icon = '<i class="fas fa-exclamation-circle text-danger"></i>';
-                    icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
-                } else if (state.id === 'COMPLETED') {
-                    icon = '<i class="fas fa-check-circle text-success"></i>';
-                } else if (state.id === 'CANCELLED') {
-                    icon = '<i class="fas fa-times-circle text-danger"></i>';
-                } else if (state.id === 'PENDING') {
-                    icon = '<i class="fas fa-clock text-warning"></i>';
-                }
-                
-                return $('<span>' + icon + ' ' + state.text + '</span>');
-            }
+            templateResult: formatOption,
+            templateSelection: formatOption
         });
+
+        // Format function for both dropdown and selection
+        function formatOption(state) {
+            if (!state.id) {
+                return $('<span><i class="fas fa-filter"></i> ' + state.text + '</span>');
+            }
+            
+            let icon = '';
+            // Status filter icons
+            if (state.id === 'OVERDUE') {
+                icon = '<i class="fas fa-exclamation-circle" style="color: #fd7e14;"></i>';
+            } else if (state.id === 'COMPLETED') {
+                icon = '<i class="fas fa-check-circle text-success"></i>';
+            } else if (state.id === 'CANCELLED') {
+                icon = '<i class="fas fa-times-circle text-danger"></i>';
+            } else if (state.id === 'PENDING') {
+                icon = '<i class="fas fa-clock text-warning"></i>';
+            } else if (state.id === 'PENDING_ALL') {
+                icon = '<i class="fas fa-tasks text-warning"></i>';
+            }
+            // Date range filter icons
+            else if (state.id === 'TODAY') {
+                icon = '<i class="fas fa-calendar-day text-info"></i>';
+            } else if (state.id === 'THREE_DAYS') {
+                icon = '<i class="fas fa-calendar-alt text-warning"></i>';  // Üç gün için özel ikon
+            } else if (state.id === 'THIS_WEEK') {
+                icon = '<i class="fas fa-calendar-week text-info"></i>';
+            } else if (state.id === 'NEXT_TWO_WEEKS') {
+                icon = '<i class="fas fa-calendar-alt text-info"></i>';
+            } else if (state.id === 'THIS_MONTH') {
+                icon = '<i class="fas fa-calendar-check text-info"></i>';
+            }
+            
+            return $('<span>' + icon + ' ' + state.text + '</span>');
+        }
+
+        // Set initial values if they exist
+        const currentStatusFilter = '[[${currentStatusFilter}]]';
+        if (currentStatusFilter) {
+            $('select[name="statusFilter"]').val(currentStatusFilter).trigger('change.select2');
+            toggleDateRangeFilter(currentStatusFilter);  // Sayfa yüklendiğinde kontrol et
+        }
+
+        const currentDateRangeFilter = '[[${currentDateRangeFilter}]]';
+        if (currentDateRangeFilter) {
+            $('select[name="dateRangeFilter"]').val(currentDateRangeFilter).trigger('change.select2');
+        }
+
+        // Handle filter changes
+        $('select[name="statusFilter"]').on('change', function() {
+            const selectedStatus = $(this).val();
+            toggleDateRangeFilter(selectedStatus);
+            $('#filterForm').submit();
+        });
+
+        $('select[name="dateRangeFilter"], select[name="priorityFilter"]').on('change', function() {
+            $('#filterForm').submit();
+        });
+
+        // Date Range filtresini göster/gizle
+        function toggleDateRangeFilter(status) {
+            const dateRangeContainer = $('.date-range-group');
+            const hiddenStatuses = ['OVERDUE', 'COMPLETED', 'CANCELLED'];
+            
+            if (hiddenStatuses.includes(status)) {
+                dateRangeContainer.hide();
+                // Date Range filtresini temizle
+                $('select[name="dateRangeFilter"]').val('').trigger('change.select2');
+            } else {
+                dateRangeContainer.show();
+            }
+        }
     });
     </script>
 </body>

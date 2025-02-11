@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,7 +103,7 @@ public class TaskController {
 
     @GetMapping("/my")
     public String listMyTasks(Model model, 
-                             @RequestParam(required = false) String statusFilter,
+                             @RequestParam(required = false) String statusFilter, 
                              @RequestParam(required = false) String priorityFilter,
                              @RequestParam(required = false) String dateRangeFilter) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -111,28 +112,94 @@ public class TaskController {
         List<Task> assignedTasks = taskService.getTasksByAssignee(currentUser);
         List<Task> createdTasks = taskService.getTasksByCreator(currentUser);
         
-        // Durum filtresi uygula
-        if (statusFilter == null) {
-            statusFilter = "PENDING";
+        // Varsayılan olarak PENDING_ALL seçili gelsin
+        if (statusFilter == null || statusFilter.isEmpty()) {
+            statusFilter = "PENDING_ALL";
         }
 
         LocalDateTime now = LocalDateTime.now();
-        
-        if ("OVERDUE".equals(statusFilter)) {
+        LocalDateTime startOfDay = now.toLocalDate().atStartOfDay(); // Günün başlangıcı (00:00:00)
+
+        if ("PENDING_ALL".equals(statusFilter)) {
+            // Önce tüm bekleyen görevleri filtrele
+            assignedTasks = assignedTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .collect(Collectors.toList());
+            createdTasks = createdTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .collect(Collectors.toList());
+
+            // Date range filtresini uygula
+            if (dateRangeFilter == null || dateRangeFilter.isEmpty()) {
+                // ALL seçili ise bugünün başlangıcından itibaren tüm görevleri göster
+                assignedTasks = assignedTasks.stream()
+                    .filter(task -> !task.getDeadline().isBefore(startOfDay))
+                    .collect(Collectors.toList());
+                createdTasks = createdTasks.stream()
+                    .filter(task -> !task.getDeadline().isBefore(startOfDay))
+                    .collect(Collectors.toList());
+            } else {
+                switch (dateRangeFilter) {
+                    case "TODAY":
+                        LocalDateTime endOfDay = now.toLocalDate().atTime(23, 59, 59);
+                        assignedTasks = assignedTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfDay))
+                            .collect(Collectors.toList());
+                        createdTasks = createdTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfDay))
+                            .collect(Collectors.toList());
+                        break;
+
+                    case "THREE_DAYS":
+                        LocalDateTime threeDaysLater = now.plusDays(3).toLocalDate().atTime(23, 59, 59);
+                        assignedTasks = assignedTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(threeDaysLater))
+                            .collect(Collectors.toList());
+                        createdTasks = createdTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(threeDaysLater))
+                            .collect(Collectors.toList());
+                        break;
+
+                    case "THIS_WEEK":
+                        LocalDateTime endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+                            .toLocalDate().atTime(23, 59, 59);
+                        assignedTasks = assignedTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfWeek))
+                            .collect(Collectors.toList());
+                        createdTasks = createdTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfWeek))
+                            .collect(Collectors.toList());
+                        break;
+
+                    case "NEXT_TWO_WEEKS":
+                        LocalDateTime twoWeeksLater = now.plusWeeks(2);
+                        assignedTasks = assignedTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(twoWeeksLater))
+                            .collect(Collectors.toList());
+                        createdTasks = createdTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(twoWeeksLater))
+                            .collect(Collectors.toList());
+                        break;
+
+                    case "THIS_MONTH":
+                        LocalDateTime endOfMonth = now.with(TemporalAdjusters.lastDayOfMonth())
+                            .toLocalDate().atTime(23, 59, 59);
+                        assignedTasks = assignedTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfMonth))
+                            .collect(Collectors.toList());
+                        createdTasks = createdTasks.stream()
+                            .filter(task -> !task.getDeadline().isAfter(endOfMonth))
+                            .collect(Collectors.toList());
+                        break;
+                }
+            }
+        } else if ("OVERDUE".equals(statusFilter)) {
             // Sadece süresi geçmiş görevleri filtrele
             assignedTasks = assignedTasks.stream()
                 .filter(task -> task.getStatus() == TaskStatus.PENDING && task.getDeadline().isBefore(now))
                 .collect(Collectors.toList());
             createdTasks = createdTasks.stream()
                 .filter(task -> task.getStatus() == TaskStatus.PENDING && task.getDeadline().isBefore(now))
-                .collect(Collectors.toList());
-        } else if ("PENDING_ALL".equals(statusFilter)) {
-            // Tüm bekleyen görevleri filtrele (süresi geçmiş olanlar dahil)
-            assignedTasks = assignedTasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.PENDING)
-                .collect(Collectors.toList());
-            createdTasks = createdTasks.stream()
-                .filter(task -> task.getStatus() == TaskStatus.PENDING)
                 .collect(Collectors.toList());
         } else if ("PENDING".equals(statusFilter)) {
             // Sadece süresi geçmemiş bekleyen görevleri filtrele
@@ -152,7 +219,7 @@ public class TaskController {
                 .filter(task -> task.getStatus() == status)
                 .collect(Collectors.toList());
         }
-
+        
         // Öncelik filtresi uygula
         if (priorityFilter != null && !priorityFilter.isEmpty()) {
             TaskPriority priority = TaskPriority.valueOf(priorityFilter);
@@ -163,78 +230,16 @@ public class TaskController {
                 .filter(task -> task.getPriority() == priority)
                 .collect(Collectors.toList());
         }
-
-        // Tarih aralığı filtresi uygula
-        if (dateRangeFilter != null && !dateRangeFilter.isEmpty()) {
-            LocalDateTime filterDate = now;
-            
-            switch (dateRangeFilter) {
-                case "OVERDUE":
-                    // Süresi geçmiş görevler
-                    assignedTasks = assignedTasks.stream()
-                        .filter(task -> task.getDeadline().isBefore(now))
-                        .collect(Collectors.toList());
-                    createdTasks = createdTasks.stream()
-                        .filter(task -> task.getDeadline().isBefore(now))
-                        .collect(Collectors.toList());
-                    break;
-                    
-                case "TODAY":
-                    // Bugün bitecek görevler
-                    LocalDateTime endOfDay = now.toLocalDate().atTime(23, 59, 59);
-                    assignedTasks = assignedTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfDay))
-                        .collect(Collectors.toList());
-                    createdTasks = createdTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfDay))
-                        .collect(Collectors.toList());
-                    break;
-                    
-                case "THIS_WEEK":
-                    // Bu hafta bitecek görevler
-                    LocalDateTime endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                        .toLocalDate().atTime(23, 59, 59);
-                    assignedTasks = assignedTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfWeek))
-                        .collect(Collectors.toList());
-                    createdTasks = createdTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfWeek))
-                        .collect(Collectors.toList());
-                    break;
-                    
-                case "NEXT_TWO_WEEKS":
-                    // İki hafta içinde bitecek görevler
-                    LocalDateTime twoWeeksLater = now.plusWeeks(2);
-                    assignedTasks = assignedTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(twoWeeksLater))
-                        .collect(Collectors.toList());
-                    createdTasks = createdTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(twoWeeksLater))
-                        .collect(Collectors.toList());
-                    break;
-                    
-                case "THIS_MONTH":
-                    // Bu ay bitecek görevler
-                    LocalDateTime endOfMonth = now.with(TemporalAdjusters.lastDayOfMonth())
-                        .toLocalDate().atTime(23, 59, 59);
-                    assignedTasks = assignedTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfMonth))
-                        .collect(Collectors.toList());
-                    createdTasks = createdTasks.stream()
-                        .filter(task -> !task.getDeadline().isBefore(now) && 
-                                      !task.getDeadline().isAfter(endOfMonth))
-                        .collect(Collectors.toList());
-                    break;
-            }
-        }
         
+        // Tüm filtrelemeler bittikten sonra, model'e eklemeden önce sıralama yapalım
+        assignedTasks = assignedTasks.stream()
+            .sorted(Comparator.comparing(Task::getDeadline))
+            .collect(Collectors.toList());
+        
+        createdTasks = createdTasks.stream()
+            .sorted(Comparator.comparing(Task::getDeadline))
+            .collect(Collectors.toList());
+
         model.addAttribute("assignedTasks", assignedTasks);
         model.addAttribute("createdTasks", createdTasks);
         model.addAttribute("priorities", TaskPriority.values());
