@@ -9,6 +9,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
 <!-- Navbar başlangıç -->
@@ -98,23 +100,23 @@
 
                 <div class="mb-3">
                     <label for="deadline" class="form-label">Deadline</label>
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="datetime-local" class="form-control" id="deadline" name="deadline"
-                               th:value="${#temporals.format(task.deadline, 'yyyy-MM-dd''T''HH:mm')}" required>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fas fa-clock"></i> Quick Select
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="1">1 Hour</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="3">3 Hours</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="6">6 Hours</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="12">12 Hours</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="24">24 Hours</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="72">3 Days</a></li>
-                                <li><a class="dropdown-item quick-deadline" href="#" data-hours="168">1 Week</a></li>
-                            </ul>
-                        </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="deadline" name="deadline" required
+                               th:value="${#temporals.format(task.deadline, 'yyyy-MM-dd HH:mm')}">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" 
+                                data-bs-toggle="dropdown" 
+                                id="quickSelectBtn">
+                            Quick Select
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item quick-select" data-days="0" href="#">Today</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="1" href="#">Tomorrow</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="2" href="#">In 2 days</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="3" href="#">In 3 days</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="7" href="#">In 1 week</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="14" href="#">In 2 weeks</a></li>
+                            <li><a class="dropdown-item quick-select" data-days="30" href="#">In 1 month</a></li>
+                        </ul>
                     </div>
                 </div>
 
@@ -146,17 +148,37 @@
             }
         });
 
+        // Flatpickr initialization
+        const deadlinePicker = flatpickr("#deadline", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true,
+            defaultHour: 23,
+            defaultMinute: 59,
+            allowInput: true
+        });
+
         $('#editTaskForm').submit(function(e) {
             e.preventDefault();
 
-            const assigneeIds = $('#assignees').val() || []; // Boş seçim durumunda boş dizi
+            const assigneeIds = $('#assignees').val() || [];
+            
+            const selectedDate = deadlinePicker.selectedDates[0];
+            const formattedDeadline = selectedDate ? 
+                selectedDate.getFullYear() + '-' +
+                String(selectedDate.getMonth() + 1).padStart(2, '0') + '-' +
+                String(selectedDate.getDate()).padStart(2, '0') + ' ' +
+                String(selectedDate.getHours()).padStart(2, '0') + ':' +
+                String(selectedDate.getMinutes()).padStart(2, '0') :
+                $('#deadline').val();
 
             const formData = {
                 title: $('#title').val(),
                 description: $('#description').val(),
                 priority: $('#priority').val(),
                 assigneeIds: assigneeIds,
-                deadline: $('#deadline').val()
+                deadline: formattedDeadline
             };
 
             fetch('/tasks/edit/' + [[${task.id}]], {
@@ -169,29 +191,43 @@
             .then(response => response.text())
             .then(result => {
                 alert(result);
-                if (!result.startsWith('Hata:')) {
+                if (!result.startsWith('Error:')) {
                     window.location.href = '/tasks/my';
                 }
             })
-            .catch(error => alert('Bir hata oluştu: ' + error));
+            .catch(error => alert('Error occurred: ' + error));
         });
 
-        // Hızlı tarih seçimi için
-        $('.quick-deadline').click(function(e) {
-            e.preventDefault();
-            const hours = $(this).data('hours');
-            const deadline = new Date(new Date().getTime() + hours * 60 * 60 * 1000);
-
-            // Tarihi yyyy-MM-ddThh:mm formatına çevir
-            const year = deadline.getFullYear();
-            const month = String(deadline.getMonth() + 1).padStart(2, '0');
-            const day = String(deadline.getDate()).padStart(2, '0');
-            const hour = String(deadline.getHours()).padStart(2, '0');
-            const minute = String(deadline.getMinutes()).padStart(2, '0');
-
-            const formattedDate = `${year}-${month}-${day}T${hour}:${minute}`;
-            $('#deadline').val(formattedDate);
+        // Quick Select handlers
+        document.querySelectorAll('.quick-select').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const days = parseInt(this.dataset.days);
+                const date = new Date();
+                date.setDate(date.getDate() + days);
+                date.setHours(23, 59, 0, 0);
+                deadlinePicker.setDate(date, true);
+                
+                // Seçilen değeri butonda göster
+                const quickSelectBtn = document.getElementById('quickSelectBtn');
+                quickSelectBtn.textContent = this.textContent;
+                quickSelectBtn.classList.add('active');
+                
+                // Dropdown'ı kapat
+                bootstrap.Dropdown.getInstance(quickSelectBtn).hide();
+            });
         });
+
+        // Deadline manuel değiştirildiğinde Quick Select butonunu sıfırla
+        deadlinePicker.config.onChange = function(selectedDates, dateStr, instance) {
+            // Eğer değişiklik Quick Select'ten gelmediyse butonu sıfırla
+            if (!instance.latestSelectedDateObj || 
+                instance.latestSelectedDateObj.getTime() !== selectedDates[0].getTime()) {
+                const quickSelectBtn = document.getElementById('quickSelectBtn');
+                quickSelectBtn.textContent = 'Quick Select';
+                quickSelectBtn.classList.remove('active');
+            }
+        };
     });
 </script>
 
@@ -201,6 +237,20 @@
     }
     .quick-deadline:hover {
         background-color: #f8f9fa;
+    }
+    /* Quick Select butonu active durumu */
+    .btn-outline-secondary.active {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    /* Dropdown toggle butonu için max-width ekle */
+    .input-group .dropdown-toggle {
+        min-width: 120px;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 </body>

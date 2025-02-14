@@ -566,28 +566,10 @@
             </div>
             <div class="col-auto" style="min-width: 200px;">
                 <select name="statusFilter" class="form-select">
-                    <option value="" th:text="#{task.filter.all}" th:selected="${currentStatusFilter == null}">All
-                    </option>
-                    <option value="PENDING_ALL"
-                            th:text="#{task.filter.pending_all}"
-                            th:selected="${currentStatusFilter == 'PENDING_ALL'}">Pending + Overdue
-                    </option>
-                    <option value="PENDING"
-                            th:text="#{task.filter.pending}"
-                            th:selected="${currentStatusFilter == 'PENDING'}">Pending
-                    </option>
-                    <option value="OVERDUE"
-                            th:text="#{task.filter.overdue}"
-                            th:selected="${currentStatusFilter == 'OVERDUE'}">Overdue
-                    </option>
-                    <option value="COMPLETED"
-                            th:text="#{task.filter.completed}"
-                            th:selected="${currentStatusFilter == 'COMPLETED'}">Completed
-                    </option>
-                    <option value="CANCELLED"
-                            th:text="#{task.filter.cancelled}"
-                            th:selected="${currentStatusFilter == 'CANCELLED'}">Cancelled
-                    </option>
+                    <option value="PENDING" th:text="#{task.filter.pending}">Pending</option>
+                    <option value="OVERDUE" th:text="#{task.filter.overdue}">Overdue</option>
+                    <option value="COMPLETED" th:text="#{task.filter.completed}">Completed</option>
+                    <option value="CANCELLED" th:text="#{task.filter.cancelled}">Cancelled</option>
                 </select>
             </div>
 
@@ -1142,8 +1124,10 @@
         // Handle filter changes
         $('select[name="statusFilter"]').on('change', function () {
             const selectedStatus = $(this).val();
-            toggleDateRangeFilter(selectedStatus);
-            $('#filterForm').submit();
+            if (selectedStatus) {  // Sadece bir değer seçiliyse işlem yap
+                toggleDateRangeFilter(selectedStatus);
+                $('#filterForm').submit();
+            }
         });
 
         $('select[name="dateRangeFilter"], select[name="priorityFilter"]').on('change', function () {
@@ -1153,15 +1137,42 @@
         // Date Range filtresini göster/gizle
         function toggleDateRangeFilter(status) {
             const dateRangeContainer = $('.date-range-group');
-            const hiddenStatuses = ['OVERDUE', 'COMPLETED', 'CANCELLED'];
-
-            if (hiddenStatuses.includes(status)) {
-                dateRangeContainer.hide();
-                // Date Range filtresini temizle
-                $('select[name="dateRangeFilter"]').val('').trigger('change.select2');
-            } else {
+            
+            if (status === 'PENDING') {
                 dateRangeContainer.show();
+                updateDateRangeOptions('PENDING');
+            } else if (['OVERDUE', 'COMPLETED', 'CANCELLED'].includes(status)) {
+                dateRangeContainer.show();
+                updateDateRangeOptions('PAST');
+            } else {
+                dateRangeContainer.hide();
+                $('select[name="dateRangeFilter"]').val('').trigger('change.select2');
             }
+        }
+
+        function updateDateRangeOptions(type) {
+            const dateRangeSelect = $('select[name="dateRangeFilter"]');
+            dateRangeSelect.empty();
+
+            if (type === 'PENDING') {
+                // PENDING için ileriye dönük seçenekler
+                dateRangeSelect.append(`<option value="">${/*[[#{task.filter.date.all}]]*/'All'}</option>`);
+                dateRangeSelect.append(`<option value="TODAY">${/*[[#{task.filter.date.today}]]*/'Due Today'}</option>`);
+                dateRangeSelect.append(`<option value="THREE_DAYS">${/*[[#{task.filter.date.three_days}]]*/'Due in Three Days'}</option>`);
+                dateRangeSelect.append(`<option value="THIS_WEEK">${/*[[#{task.filter.date.this_week}]]*/'Due This Week'}</option>`);
+                dateRangeSelect.append(`<option value="NEXT_TWO_WEEKS">${/*[[#{task.filter.date.next_two_weeks}]]*/'Due in Two Weeks'}</option>`);
+                dateRangeSelect.append(`<option value="THIS_MONTH">${/*[[#{task.filter.date.this_month}]]*/'Due This Month'}</option>`);
+            } else {
+                // Geriye dönük seçenekler (OVERDUE, COMPLETED, CANCELLED için)
+                dateRangeSelect.append(`<option value="">${/*[[#{task.filter.date.all}]]*/'All'}</option>`);
+                dateRangeSelect.append(`<option value="PAST_TODAY">${/*[[#{task.filter.date.past.today}]]*/'Today'}</option>`);
+                dateRangeSelect.append(`<option value="PAST_YESTERDAY">${/*[[#{task.filter.date.past.yesterday}]]*/'Since Yesterday'}</option>`);
+                dateRangeSelect.append(`<option value="PAST_THREE_DAYS">${/*[[#{task.filter.date.past.three_days}]]*/'Last 3 Days'}</option>`);
+                dateRangeSelect.append(`<option value="PAST_WEEK">${/*[[#{task.filter.date.past.week}]]*/'Last Week'}</option>`);
+                dateRangeSelect.append(`<option value="PAST_MONTH">${/*[[#{task.filter.date.past.month}]]*/'Last Month'}</option>`);
+            }
+
+            dateRangeSelect.trigger('change.select2');
         }
     });
 </script>
