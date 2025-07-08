@@ -11,10 +11,10 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.taskmanager</groupId>
-    <artifactId>task-manager</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>task-manager</name>
+    <groupId>com.taskmanagement</groupId>
+    <artifactId>task-management</artifactId>
+    <version>1.0</version>
+    <name>task-management</name>
     <description>Task Manager Application</description>
 
     <properties>

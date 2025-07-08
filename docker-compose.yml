@@ -1,32 +1,31 @@
-version: '3.8'
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-taskmanager
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: taskmanager
-      MYSQL_USER: taskuser
-      MYSQL_PASSWORD: taskpassword
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+version: "3.8"
 
-  taskmanager:
-    image: openjdk:17-jdk-alpine
-    container_name: KUEH-TASK-MANAGEMENT
-    volumes:
-      - /fastdisk/docker-work/scf_drive/KUEH/:/tmp/task-management
-    ports:
-      - "33775:8080"
-    depends_on:
-      - mysql
+services:
+  postgres:
+    image: postgres:15
+    container_name: taskmanager_postgres
+    restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/taskmanager
-      SPRING_DATASOURCE_USERNAME: taskuser
-      SPRING_DATASOURCE_PASSWORD: taskpassword
-    command: java -jar /tmp/task-management/task-management/task-manager-0.0.1-SNAPSHOT.jar
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: taskmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: taskmanager_app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskmanager?ssl=false
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 12345
 
 volumes:
-  mysql_data: 
+  postgres_data:

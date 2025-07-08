@@ -560,12 +560,11 @@
 <div class="container mt-4">
     <!-- Update Filter Section -->
     <div class="mb-4">
-        <form id="filterForm" method="get" class="row g-3 align-items-center">
-            <div class="col-auto">
-                <label class="col-form-label">Status Filter:</label>
-            </div>
-            <div class="col-auto" style="min-width: 200px;">
-                <select name="statusFilter" class="form-select">
+        <form id="filterForm" method="get" class="row g-3">
+            <!-- Status Filter -->
+            <div class="col-12 col-md-auto d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                <label class="col-form-label me-md-2">Status Filter:</label>
+                <select name="statusFilter" class="form-select w-100 w-md-auto">
                     <option value="PENDING" th:text="#{task.filter.pending}">Pending</option>
                     <option value="OVERDUE" th:text="#{task.filter.overdue}">Overdue</option>
                     <option value="COMPLETED" th:text="#{task.filter.completed}">Completed</option>
@@ -573,11 +572,10 @@
                 </select>
             </div>
 
-            <div class="col-auto ms-4">
-                <label class="col-form-label">Priority Filter:</label>
-            </div>
-            <div class="col-auto">
-                <select name="priorityFilter" class="form-select">
+            <!-- Priority Filter -->
+            <div class="col-12 col-md-auto d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                <label class="col-form-label me-md-2">Priority Filter:</label>
+                <select name="priorityFilter" class="form-select w-100 w-md-auto">
                     <option value="">All</option>
                     <option th:each="priority : ${priorities}"
                             th:value="${priority.name()}"
@@ -587,22 +585,21 @@
                 </select>
             </div>
 
-            <div class="col-auto ms-4 date-range-group">
-                <label class="col-form-label">Date Range:</label>
-            </div>
-            <div class="col-auto date-range-group">
-                <select name="dateRangeFilter" class="form-select">
+            <!-- Date Range -->
+            <div class="col-12 col-md-auto d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                <label class="col-form-label me-md-2">Date Range:</label>
+                <select name="dateRangeFilter" class="form-select w-100 w-md-auto">
                     <option value="" th:text="#{task.filter.date.all}">All</option>
                     <option value="TODAY" th:text="#{task.filter.date.today}">Due Today</option>
                     <option value="THREE_DAYS" th:text="#{task.filter.date.three_days}">Due in Three Days</option>
                     <option value="THIS_WEEK" th:text="#{task.filter.date.this_week}">Due This Week</option>
-                    <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}">Due in Two Weeks
-                    </option>
+                    <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}">Due in Two Weeks</option>
                     <option value="THIS_MONTH" th:text="#{task.filter.date.this_month}">Due This Month</option>
                 </select>
             </div>
         </form>
     </div>
+
 
     <!-- My Task Assignments kartı için -->
     <div class="card mb-4 tasks-created-card">
