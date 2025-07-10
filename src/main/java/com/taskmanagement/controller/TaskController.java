@@ -422,6 +422,7 @@ public class TaskController {
             // Tamamlayan kişi bilgisini ekle
             if (task.getCompletedBy() != null) {
                 Map<String, Object> completedByMap = new HashMap<>();
+                completedByMap.put("id", task.getCompletedBy().getId()); // Add user id for frontend alignment
                 completedByMap.put("firstName", task.getCompletedBy().getFirstName());
                 completedByMap.put("lastName", task.getCompletedBy().getLastName());
                 taskMap.put("completedBy", completedByMap);
@@ -437,6 +438,7 @@ public class TaskController {
                     noteMap.put("createdAt", note.getCreatedAt());
                     
                     Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("id", note.getUser().getId()); // Add user id for frontend alignment
                     userMap.put("firstName", note.getUser().getFirstName());
                     userMap.put("lastName", note.getUser().getLastName());
                     noteMap.put("user", userMap);
@@ -455,6 +457,7 @@ public class TaskController {
                 completedMap.put("date", task.getCompletedAt());
                 
                 Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", task.getCompletedBy().getId()); // Add user id for frontend alignment
                 userMap.put("firstName", task.getCompletedBy().getFirstName());
                 userMap.put("lastName", task.getCompletedBy().getLastName());
                 completedMap.put("user", userMap);
