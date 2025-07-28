@@ -565,10 +565,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/tasks/create">New Task</a>
+                    <a class="nav-link" href="/tasks/create"><i class="fa-solid fa-plus"></i> Create Task</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/tasks/my">My Tasks</a>
+                    <a class="nav-link active" href="/tasks/my-tasks"><i class="fa-solid fa-wand-magic-sparkles"></i> My Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/tasks/my-todos"><i class="fa-solid fa-list-check"></i> My To-Do’s</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/friends">
@@ -632,11 +635,11 @@
                 <label class="col-form-label me-md-2">Date Range:</label>
                 <select name="dateRangeFilter" class="form-select w-100 w-md-auto">
                     <option value="" th:text="#{task.filter.date.all}" th:selected="${'' == currentDateRangeFilter}">All</option>
-                    <option value="TODAY" th:text="#{task.filter.date.today}" th:selected="${'TODAY' == currentDateRangeFilter}">Due Today</option>
-                    <option value="THREE_DAYS" th:text="#{task.filter.date.three_days}" th:selected="${'THREE_DAYS' == currentDateRangeFilter}">Due in Three Days</option>
-                    <option value="THIS_WEEK" th:text="#{task.filter.date.this_week}" th:selected="${'THIS_WEEK' == currentDateRangeFilter}">Due This Week</option>
-                    <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}" th:selected="${'NEXT_TWO_WEEKS' == currentDateRangeFilter}">Due in Two Weeks</option>
-                    <option value="THIS_MONTH" th:text="#{task.filter.date.this_month}" th:selected="${'THIS_MONTH' == currentDateRangeFilter}">Due This Month</option>
+                    <option value="TODAY" th:text="#{task.filter.date.today}" th:selected="${'TODAY' == currentDateRangeFilter}">Today</option>
+                    <option value="THREE_DAYS" th:text="#{task.filter.date.three_days}" th:selected="${'THREE_DAYS' == currentDateRangeFilter}">Three Days</option>
+                    <option value="THIS_WEEK" th:text="#{task.filter.date.this_week}" th:selected="${'THIS_WEEK' == currentDateRangeFilter}">This Week</option>
+                    <option value="NEXT_TWO_WEEKS" th:text="#{task.filter.date.next_two_weeks}" th:selected="${'NEXT_TWO_WEEKS' == currentDateRangeFilter}">Two Weeks</option>
+                    <option value="THIS_MONTH" th:text="#{task.filter.date.this_month}" th:selected="${'THIS_MONTH' == currentDateRangeFilter}">This Month</option>
                 </select>
             </div>
         </form>
@@ -647,8 +650,8 @@
     <div class="card mb-4 tasks-created-card">
         <div class="card-header bg-primary text-white">
             <div class="d-flex align-items-center">
-                <i class="fas fa-tasks me-2 header-icon"></i>
-                <h3 class="mb-0">My Task Assignments</h3>
+                <i class="fa-solid fa-wand-magic-sparkles me-2 header-icon"></i>
+                <h3 class="mb-0">My Tasks</h3>
             </div>
         </div>
         <div class="card-body">
@@ -675,7 +678,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <button class="dropdown-item" th:onclick="'editTask(' + ${task.id} + ')'">
+                                        <button class="dropdown-item text-success" th:onclick="'editTask(' + ${task.id} + ')'">
                                             <i class="fas fa-edit me-2"></i> Edit
                                         </button>
                                     </li>
@@ -735,80 +738,80 @@
     </div>
 
     <!-- Tasks to Do kartı için -->
-    <div class="card tasks-assigned-card">
-        <div class="card-header bg-info text-white">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-clipboard-list me-2 header-icon"></i>
-                <h3 class="mb-0">Tasks to Do</h3>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div th:each="task : ${assignedTasks}" class="col-md-4">
-                    <div class="card task-card mb-3"
-                         th:classappend="${'status-' + task.status.name()}"
-                         th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}"
-                         th:data-priority="${task.priority}">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center gap-2">
-                                <i th:class="${'status-icon fas ' +
-                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :
-                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :
-                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :
-                                              'fa-clock pending')}"
-                                   th:title="${task.status.displayValue}"></i>
-                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>
-                            </div>
+<!--    <div class="card tasks-assigned-card">-->
+<!--        <div class="card-header bg-info text-white">-->
+<!--            <div class="d-flex align-items-center">-->
+<!--                <i class="fas fa-clipboard-list me-2 header-icon"></i>-->
+<!--                <h3 class="mb-0">Tasks to Do</h3>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <div class="row">-->
+<!--                <div th:each="task : ${assignedTasks}" class="col-md-4">-->
+<!--                    <div class="card task-card mb-3"-->
+<!--                         th:classappend="${'status-' + task.status.name()}"-->
+<!--                         th:data-overdue="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)}"-->
+<!--                         th:data-priority="${task.priority}">-->
+<!--                        <div class="card-header d-flex justify-content-between align-items-center">-->
+<!--                            <div class="d-flex align-items-center gap-2">-->
+<!--                                <i th:class="${'status-icon fas ' +-->
+<!--                                             (task.status.name() == 'COMPLETED' ? 'fa-check-circle completed' :-->
+<!--                                              task.status.name() == 'CANCELLED' ? 'fa-times-circle cancelled' :-->
+<!--                                              (task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline)) ? 'fa-exclamation-circle text-danger' :-->
+<!--                                              'fa-clock pending')}"-->
+<!--                                   th:title="${task.status.displayValue}"></i>-->
+<!--                                <h5 class="card-title mb-0" th:text="${task.title}">Task Title</h5>-->
+<!--                            </div>-->
 
-                            <!-- Hamburger menü -->
-                            <div class="dropdown"
-                                 th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">
-                                <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-bars"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <button class="dropdown-item text-success"
-                                                th:onclick="'completeTask(' + ${task.id} + ')'">
-                                            <i class="fas fa-check me-2"></i> Complete
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text description-text" th:text="${task.description}">Description</p>
-                            <hr class="my-2">
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-users me-1"></i> Other Assignees:
-                                    <span th:if="${task.assignees.size() > 1}">
-                                        <span th:each="assignee, iterStat : ${task.assignees}"
-                                              th:unless="${assignee.id == currentUser.id}">
-                                            <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>
-                                        </span>
-                                    </span>
-                                    <span th:if="${task.assignees.size() <= 1}">No other assignees</span>
-                                </small>
-                            </p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-clock me-1"></i>
-                                    <span th:class="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline) ? 'text-danger fw-bold' : ''}"
-                                          th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Date</span>
-                                </small>
-                            </p>
-                            <!-- Task History Button -->
-                            <button class="btn btn-sm btn-info mt-2 w-100"
-                                    th:onclick="'showTaskHistory(' + ${task.id} + ')'">
-                                <i class="fas fa-history me-1"></i> Task History
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--                            &lt;!&ndash; Hamburger menü &ndash;&gt;-->
+<!--                            <div class="dropdown"-->
+<!--                                 th:if="${task.status.name() != 'COMPLETED' && task.status.name() != 'CANCELLED'}">-->
+<!--                                <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">-->
+<!--                                    <i class="fas fa-bars"></i>-->
+<!--                                </button>-->
+<!--                                <ul class="dropdown-menu dropdown-menu-end">-->
+<!--                                    <li>-->
+<!--                                        <button class="dropdown-item text-success"-->
+<!--                                                th:onclick="'completeTask(' + ${task.id} + ')'">-->
+<!--                                            <i class="fas fa-check me-2"></i> Complete-->
+<!--                                        </button>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="card-body">-->
+<!--                            <p class="card-text description-text" th:text="${task.description}">Description</p>-->
+<!--                            <hr class="my-2">-->
+<!--                            <p class="card-text">-->
+<!--                                <small class="text-muted">-->
+<!--                                    <i class="fas fa-users me-1"></i> Other Assignees:-->
+<!--                                    <span th:if="${task.assignees.size() > 1}">-->
+<!--                                        <span th:each="assignee, iterStat : ${task.assignees}"-->
+<!--                                              th:unless="${assignee.id == currentUser.id}">-->
+<!--                                            <span th:text="${assignee.firstName + ' ' + assignee.lastName + (iterStat.last ? '' : ', ')}"></span>-->
+<!--                                        </span>-->
+<!--                                    </span>-->
+<!--                                    <span th:if="${task.assignees.size() <= 1}">No other assignees</span>-->
+<!--                                </small>-->
+<!--                            </p>-->
+<!--                            <p class="card-text">-->
+<!--                                <small class="text-muted">-->
+<!--                                    <i class="fas fa-clock me-1"></i>-->
+<!--                                    <span th:class="${task.status.name() == 'PENDING' && #temporals.createNow().isAfter(task.deadline) ? 'text-danger fw-bold' : ''}"-->
+<!--                                          th:text="${#temporals.format(task.deadline, 'dd/MM/yyyy HH:mm')}">Date</span>-->
+<!--                                </small>-->
+<!--                            </p>-->
+<!--                            &lt;!&ndash; Task History Button &ndash;&gt;-->
+<!--                            <button class="btn btn-sm btn-info mt-2 w-100"-->
+<!--                                    th:onclick="'showTaskHistory(' + ${task.id} + ')'">-->
+<!--                                <i class="fas fa-history me-1"></i> Task History-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 
 
@@ -826,6 +829,7 @@
             <div class="modal-body">
                 <div class="task-info mb-3">
                     <h6 class="task-title mb-2"></h6>
+<!--                    <div class="task-title mb-2" style="max-height: 6.5em; overflow-y: auto; white-space: pre-wrap;"></div>-->
                     <div class="task-status"></div>
                 </div>
                 <div class="chat-history" style="max-height: 400px; overflow-y: auto;"></div>
@@ -1221,11 +1225,11 @@
             if (type === 'PENDING') {
                 // PENDING için ileriye dönük seçenekler
                 dateRangeSelect.append(`<option value="">${/*[[#{task.filter.date.all}]]*/'All'}</option>`);
-                dateRangeSelect.append(`<option value="TODAY">${/*[[#{task.filter.date.today}]]*/'Due Today'}</option>`);
-                dateRangeSelect.append(`<option value="THREE_DAYS">${/*[[#{task.filter.date.three_days}]]*/'Due in Three Days'}</option>`);
-                dateRangeSelect.append(`<option value="THIS_WEEK">${/*[[#{task.filter.date.this_week}]]*/'Due This Week'}</option>`);
-                dateRangeSelect.append(`<option value="NEXT_TWO_WEEKS">${/*[[#{task.filter.date.next_two_weeks}]]*/'Due in Two Weeks'}</option>`);
-                dateRangeSelect.append(`<option value="THIS_MONTH">${/*[[#{task.filter.date.this_month}]]*/'Due This Month'}</option>`);
+                dateRangeSelect.append(`<option value="TODAY">${/*[[#{task.filter.date.today}]]*/'Today'}</option>`);
+                dateRangeSelect.append(`<option value="THREE_DAYS">${/*[[#{task.filter.date.three_days}]]*/'Three Days'}</option>`);
+                dateRangeSelect.append(`<option value="THIS_WEEK">${/*[[#{task.filter.date.this_week}]]*/'This Week'}</option>`);
+                dateRangeSelect.append(`<option value="NEXT_TWO_WEEKS">${/*[[#{task.filter.date.next_two_weeks}]]*/'Two Weeks'}</option>`);
+                dateRangeSelect.append(`<option value="THIS_MONTH">${/*[[#{task.filter.date.this_month}]]*/'This Month'}</option>`);
             } else {
                 // Geriye dönük seçenekler (OVERDUE, COMPLETED, CANCELLED için)
                 dateRangeSelect.append(`<option value="">${/*[[#{task.filter.date.all}]]*/'All'}</option>`);

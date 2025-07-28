@@ -20,10 +20,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/tasks/create">New Task</a>
+                    <a class="nav-link active" href="/tasks/create"><i class="fa-solid fa-plus"></i> Create Task</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/tasks/my">My Tasks</a>
+                    <a class="nav-link" href="/tasks/my-tasks"><i class="fa-solid fa-wand-magic-sparkles"></i> My Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tasks/my-todos"><i class="fa-solid fa-list-check"></i> My To-Do’s</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/friends">
@@ -58,8 +61,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Create New Task</h5>
+                <div class="card-header" style="background-color:#adbaae">
+                    <h5 class="mb-0">Create Task</h5>
                 </div>
                 <div class="card-body">
                     <form id="createTaskForm">
@@ -172,7 +175,7 @@
                 success: function(response) {
                     alert(response);
                     if (!response.startsWith('Error:')) {
-                        window.location.href = '/tasks/my';
+                        window.location.href = '/tasks/my-tasks';
                     }
                 },
                 error: function(xhr, status, error) {

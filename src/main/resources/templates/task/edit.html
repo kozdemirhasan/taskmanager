@@ -23,10 +23,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/tasks/create">New Task</a>
+                    <a class="nav-link" href="/tasks/create"><i class="fa-solid fa-plus"></i> Create Task</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/tasks/my">My Tasks</a>
+                    <a class="nav-link active" href="/tasks/my-tasks"><i class="fa-solid fa-wand-magic-sparkles"></i> My Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/tasks/my-todos"><i class="fa-solid fa-list-check"></i> My To-Do’s</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/friends">
@@ -123,7 +126,7 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save me-1"></i> Save
                 </button>
-                <a href="/tasks/my" class="btn btn-secondary">
+                <a href="/tasks/my-tasks" class="btn btn-secondary">
                     <i class="fas fa-times me-1"></i> Cancel
                 </a>
             </form>
@@ -192,7 +195,7 @@
             .then(result => {
                 alert(result);
                 if (!result.startsWith('Error:')) {
-                    window.location.href = '/tasks/my';
+                    window.location.href = '/tasks/my-tasks';
                 }
             })
             .catch(error => alert('Error occurred: ' + error));
